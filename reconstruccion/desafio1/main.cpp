@@ -95,21 +95,17 @@ void aplicarXOR(unsigned char* imagenfinal, unsigned char* idistorcionada, int t
 //Funcion para la rotacion de los bits hacia la izquierda
 void rotacionBits(unsigned char* datos, int tamaño, int totalBits){
     for(int i = 0; i < tamaño; i++){
-        unsigned char valor = datos[i];
-        datos[i] = (valor << totalBits) | (valor >> (8 - totalBits));
+        datos[i] = (datos[i] << totalBits) | (datos[i] > (8 - totalBits));
     }
 }
 
+
 // Funcion para la Suma mascara
-//=============================== Esta es la parte de la suma (formula de enmascaramiento de la guia) hay que hacer lo invero================
-void sumaMascara(unsigned char* imagen, unsigned int* mascara, int semilla, int tamaño) {
-    for (int i = 0; i < tamaño; i++) {
-        // Índice en la máscara considerando la semilla como offset
+void formulaInversa(unsigned char* imagen, unsigned int* mascara, int semilla, int tamaño){
+    for(int i = 0; i < tamaño; i++){
         int indiceMascara = (i + semilla) % tamaño;
-        // Aplicar la fórmula (asumiendo que es una suma con el valor de la máscara)
-        int nuevoValor = imagen[i] + mascara[indiceMascara % (tamaño / 3) * 3 + i % 3];
-        // Asegurar que el valor esté en el rango 0-255
-        imagen[i] = nuevoValor % 256;
+        int newvalor = imagen[i] + mascara[indiceMascara % (tamaño / 3) * 3 + i % 3];
+        imagen[i] = newvalor % 256;
     }
 }
 
@@ -127,7 +123,7 @@ int main()
     unsigned char* datosP3 = cargarImagen(rutaP3, anchoP3, altoP3);
     if(!datosP3){
         cout << "Error al cargar la imagen P3" << endl;
-        delete[] datosP3;
+        //delete[] datosP3;
         return 1;
     }
     cout << "Imagen P3 cargada correctamente: " << anchoP3 << " x " << altoP3 << " pixels" << endl;
@@ -175,7 +171,7 @@ int main()
     rotacionBits(datosP3, tamañoDatos, bitsRotados);
     cout << "Rotacion aplicada a P3 luego del XOR" << endl;
 
-    //Lo mismo de cargar M1 pero con M2
+    /*/Lo mismo de cargar M1 pero con M2
     const char* rutaM2 = "M2.txt";
     int semillaM2 = 0;
     int numPixelesM2 = 0;
@@ -188,14 +184,15 @@ int main()
         return 1;
     }
     cout << "Mascara M2 cargada correctamente" << endl;
-    delete[] datosM2;
+    delete[] datosM2;/*/
+
     //aplicacion de suma mascaras para P3 con ayuda de la imagen M y la semilla M2
-    sumaMascara(datosP3, datosM, semillaM2, tamañoDatos);
+    //formulaInversa(datosP3, datosM, semillaM2, tamañoDatos);
 
     //aplicar nuevamente el XOR entre P3 e I_M modificados
     aplicarXOR(datosP3, datosI_M, tamañoDatos);
 
-    sumaMascara(datosP3, datosM, semillaM2, tamañoDatos);
+    //formulaInversa(datosP3, datosM, semillaM2, tamañoDatos);
 
     //exportacion
     bool reconstruccion = guardarImagen(datosP3, anchoP3, altoP3, rutafinal);
@@ -206,12 +203,11 @@ int main()
         cout << "Error" << endl;
     }
 
-    delete[] datosM2;
     delete[] datosP3;
     delete[] datosI_M;
     delete[] datosM;
+    //delete[] datosM2;
 
     return 0;
 
 }
-
