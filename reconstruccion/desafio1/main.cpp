@@ -147,7 +147,7 @@ int main()
 
 
 
-    /*/Lamado de la funcion para cargar M (mascar)
+    Lamado de la funcion para cargar M (mascar)
     const char* rutaM = "M1.txt";
     int semilla = 0;
     int numPixeles = 0;
@@ -171,7 +171,7 @@ int main()
     rotacionBits(datosP3, tamañoDatos, bitsRotados);
     cout << "Rotacion aplicada a P3 luego del XOR" << endl;
 
-    Lo mismo de cargar M1 pero con M2
+    /*/Lo mismo de cargar M1 pero con M2
     const char* rutaM2 = "M2.txt";
     int semillaM2 = 0;
     int numPixelesM2 = 0;
