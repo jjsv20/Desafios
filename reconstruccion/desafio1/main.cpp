@@ -76,7 +76,7 @@ unsigned int* cargarMascara(const char* rutaArchivo, int &semilla, int &numPixel
         archivo >> r >> g >> b;
         resultado[i] = r;
         resultado[i + 1] = g;
-        resultado[i + 1] = b;
+        resultado[i + 2] = b;
     }
     archivo.close();
     cout << "Semilla: " << semilla << endl;
@@ -94,15 +94,23 @@ void aplicarXOR(unsigned char* imagenfinal, unsigned char* idistorcionada, int t
 
 //Funcion para la rotacion de los bits hacia la izquierda
 void rotacionBits(unsigned char* datos, int tamaño, int totalBits){
-    for(int i = 0; i < totalBits; i++){
+    for(int i = 0; i < tamaño; i++){
         unsigned char valor = datos[i];
         datos[i] = (valor << totalBits) | (valor >> (8 - totalBits));
     }
 }
 
 // Funcion para la Suma mascara
-void sumaMascara(unsigned char* imagen, unsigned int* mascara, int semilla, int tamaño){
-    for()
+//=============================== Esta es la parte de la suma (formula de enmascaramiento de la guia) hay que hacer lo invero================
+void sumaMascara(unsigned char* imagen, unsigned int* mascara, int semilla, int tamaño) {
+    for (int i = 0; i < tamaño; i++) {
+        // Índice en la máscara considerando la semilla como offset
+        int indiceMascara = (i + semilla) % tamaño;
+        // Aplicar la fórmula (asumiendo que es una suma con el valor de la máscara)
+        int nuevoValor = imagen[i] + mascara[indiceMascara % (tamaño / 3) * 3 + i % 3];
+        // Asegurar que el valor esté en el rango 0-255
+        imagen[i] = nuevoValor % 256;
+    }
 }
 
 int main()
@@ -119,6 +127,7 @@ int main()
     unsigned char* datosP3 = cargarImagen(rutaP3, anchoP3, altoP3);
     if(!datosP3){
         cout << "Error al cargar la imagen P3" << endl;
+        delete[] datosP3;
         return 1;
     }
     cout << "Imagen P3 cargada correctamente: " << anchoP3 << " x " << altoP3 << " pixels" << endl;
@@ -126,8 +135,83 @@ int main()
     //Llamado de la funcion para cargar IM con sus parametros
     unsigned char* datosI_M = cargarImagen(rutaI_M, anchoI_M, altoI_M);
     if(!datosI_M){
-        cout << "Error al cargar la imagen P3" << endl;
+        cout << "Error al cargar la imagen I_M" << endl;
+        delete[] datosP3;
         return 1;
     }
     cout << "Imagen I_M cargada correctamente: " << anchoI_M << " x " << altoI_M << " pixels" << endl;
+
+
+    if(anchoP3 != anchoI_M || altoP3 != altoI_M){
+        cout << "Las diemensiones no coinciden" << endl;
+        delete[] datosP3;
+        delete[] datosI_M;
+        return 1;
+    }
+
+
+
+    //Lamado de la funcion para cargar M (mascar)
+    const char* rutaM = "M1.txt";
+    int semilla = 0;
+    int numPixeles = 0;
+    unsigned int* datosM = cargarMascara(rutaM, semilla, numPixeles);
+    if(!datosM){
+        cout << "Error al cargar la mascara M1" << endl;
+        delete[] datosP3;
+        delete[] datosI_M;
+        return 1;
+    }
+    cout << "Mascara M1 cargada correctamente" << endl;
+
+    int tamañoDatos = anchoP3 * altoP3 * 3;
+
+    //XOR a P3 con ayuda de I_M
+    aplicarXOR(datosP3, datosI_M, tamañoDatos);
+    cout << "XOR aplicado" << endl;
+
+    //rotacion de los bit de P3 luego de aplicar el XOR
+    const int bitsRotados = 3;
+    rotacionBits(datosP3, tamañoDatos, bitsRotados);
+    cout << "Rotacion aplicada a P3 luego del XOR" << endl;
+
+    //Lo mismo de cargar M1 pero con M2
+    const char* rutaM2 = "M2.txt";
+    int semillaM2 = 0;
+    int numPixelesM2 = 0;
+    unsigned int* datosM2 = cargarMascara(rutaM2, semillaM2, numPixelesM2);
+    if(!datosM2){
+        cout << "Error al cargar la mascara M2" << endl;
+        delete[] datosP3;
+        delete[] datosI_M;
+        delete[] datosM;
+        return 1;
+    }
+    cout << "Mascara M2 cargada correctamente" << endl;
+    delete[] datosM2;
+    //aplicacion de suma mascaras para P3 con ayuda de la imagen M y la semilla M2
+    sumaMascara(datosP3, datosM, semillaM2, tamañoDatos);
+
+    //aplicar nuevamente el XOR entre P3 e I_M modificados
+    aplicarXOR(datosP3, datosI_M, tamañoDatos);
+
+    sumaMascara(datosP3, datosM, semillaM2, tamañoDatos);
+
+    //exportacion
+    bool reconstruccion = guardarImagen(datosP3, anchoP3, altoP3, rutafinal);
+    // cout << "Reconstruccion: " << (reconstruccion ? "Exitosa" : "Fallida") << endl;
+    if(reconstruccion){
+        cout << "Reconstruccion exitosa" << endl;
+    } else {
+        cout << "Error" << endl;
+    }
+
+    delete[] datosM2;
+    delete[] datosP3;
+    delete[] datosI_M;
+    delete[] datosM;
+
+    return 0;
+
 }
+
