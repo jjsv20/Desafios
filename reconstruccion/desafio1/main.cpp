@@ -111,8 +111,8 @@ void formulaInversa(unsigned char* imagen, unsigned int* mascara, int semilla, i
 
 int main()
 {
-    QString rutaP3 = "P3.bmp";
-    QString rutaI_M = "I_M.bmp";
+    QString rutaP3 = "I_Du.bmp";
+    QString rutaI_M = "I_MU.bmp";
     QString rutafinal = "ResultadoT.bmp";
 
     //Dimensiones de las imagenes
@@ -147,7 +147,11 @@ int main()
 
 
 
-    Lamado de la funcion para cargar M (mascar)
+<<<<<<< HEAD
+    //Lamado de la funcion para cargar M (mascar)
+=======
+    //Lamado de la funcion para cargar M (mascar)
+>>>>>>> d6da3db (Transformaciones caso 2)
     const char* rutaM = "M1.txt";
     int semilla = 0;
     int numPixeles = 0;
@@ -164,12 +168,12 @@ int main()
 
     //XOR a P3 con ayuda de I_M
     aplicarXOR(datosP3, datosI_M, tamañoDatos);
-    cout << "XOR aplicado" << endl;
+    cout << "XOR aplicado I_D - I_M" << endl;//1
 
     //rotacion de los bit de P3 luego de aplicar el XOR
-    const int bitsRotados = 3;
+    const int bitsRotados = 2;
     rotacionBits(datosP3, tamañoDatos, bitsRotados);
-    cout << "Rotacion aplicada a P3 luego del XOR" << endl;
+    cout << "Rotacion aplicada a P3 luego del XOR" << endl;//2
 
     /*/Lo mismo de cargar M1 pero con M2
     const char* rutaM2 = "M2.txt";
@@ -190,6 +194,13 @@ int main()
     //formulaInversa(datosP3, datosM, semillaM2, tamañoDatos);
 
     //aplicar nuevamente el XOR entre P3 e I_M modificados
+    aplicarXOR(datosP3, datosI_M, tamañoDatos);//3
+    const int bitsRotados1 = 5;
+    rotacionBits(datosP3, tamañoDatos, bitsRotados1);
+    cout << "Rotacion aplicada a P3 luego del XOR" << endl;//4
+    aplicarXOR(datosP3, datosI_M, tamañoDatos);//5
+    const int bitsRotados2 = 4;
+    rotacionBits(datosP3, tamañoDatos, bitsRotados2);//6
     aplicarXOR(datosP3, datosI_M, tamañoDatos);
 
     //formulaInversa(datosP3, datosM, semillaM2, tamañoDatos);
