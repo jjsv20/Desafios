@@ -83,18 +83,6 @@ unsigned int* cargarMascara(const char* nombreArchivo, int &semilla, int &num_pi
     return RGB;
 }
 
-/*/Funcon aplicacion formula de la guia (Suma despues de cada XOR o cada Rotacion)******
-//void aplicarMascara(unsigned char* datos, unsigned int* mascara, int semilla, int tamañoDatos, int numPixelesMascara) {
-    int totalPixeles = tamañoDatos / 3;
-    for (int i = 0; i < numPixelesMascara; ++i) {
-        int indiceID = ((i + semilla) % totalPixeles) * 3;
-        datos[indiceID] = (datos[indiceID] - mascara[i * 3]) % 256;
-        datos[indiceID + 1] = (256 + datos[indiceID + 1] + mascara[i * 3 + 1]) % 256;
-        datos[indiceID + 2] = (256 + datos[indiceID + 2] + mascara[i * 3 + 2]) % 256;
-    }
-}/*/
-
-
 //Aplica operación XOR entre imagen y máscara**************************
 void aplicarXOR(unsigned char* imagenfinal, unsigned char* idistorcionada, int tamaño) {
     for (int i = 0; i < tamaño; i++) {
@@ -114,9 +102,9 @@ void rotacionBits(unsigned char* datos, int tamaño, int totalBits){
 
 int main()
 {
-    QString rutaP3 = "I_D.bmp";
-    QString rutaI_M = "I_M.bmp";
-    QString rutafinal = "I_DO.bmp";
+    QString rutaP3 = "I_DU.bmp";
+    QString rutaI_M = "I_MU.bmp";
+    QString rutafinal = "I_UMO.bmp";
 
     //Dimensiones de las imagenes
     int anchoP3 = 0;
@@ -145,7 +133,7 @@ int main()
 
     int anchoM = 0;
     int altoM = 0;
-    unsigned char* mascara = cargarImagen("M.bmp", anchoM , altoM);
+    unsigned char* mascara = cargarImagen("MU.bmp", anchoM , altoM);
     if(!mascara){
         cout << "Error al cargar M.bmp" << endl;
         delete[] datosP3;
@@ -155,7 +143,7 @@ int main()
     //cargar archivo M0.txt que se compara con el primer XOR
     int semilla0 = 0;
     int num_pixels0 = 0;
-    unsigned int *maskingData0 = cargarMascara("M0.txt", semilla0, num_pixels0);
+    unsigned int *maskingData0 = cargarMascara("M6U.txt", semilla0, num_pixels0);
     if (!maskingData0) {
         cout << " No se pudo leer M1.txt\n";
         delete[] datosP3;
@@ -167,7 +155,7 @@ int main()
 
     int semilla1 = 0;
     int num_pixels1 = 0;
-    unsigned int *maskingData1 = cargarMascara("M1.txt", semilla1, num_pixels1);
+    unsigned int *maskingData1 = cargarMascara("M5U.txt", semilla1, num_pixels1);
     if (!maskingData1) {
         cout << " No se pudo leer M1.txt\n";
         delete[] datosP3;
@@ -178,9 +166,53 @@ int main()
 
     int semilla2 = 0;
     int num_pixels2 = 0;
-    unsigned int *maskingData2 = cargarMascara("M2.txt", semilla2, num_pixels2);
+    unsigned int *maskingData2 = cargarMascara("M4U.txt", semilla2, num_pixels2);
     if (!maskingData2) {
-        cout << " No se pudo leer M1.txt\n";
+        cout << " No se pudo leer M2.txt\n";
+        delete[] datosP3;
+        delete[] datosI_M;
+        delete[] mascara;
+        return -1;
+    }
+
+    int semilla3 = 0;
+    int num_pixels3 = 0;
+    unsigned int *maskingData3 = cargarMascara("M3U.txt", semilla3, num_pixels3);
+    if (!maskingData3) {
+        cout << " No se pudo leer M2.txt\n";
+        delete[] datosP3;
+        delete[] datosI_M;
+        delete[] mascara;
+        return -1;
+    }
+
+    int semilla4 = 0;
+    int num_pixels4 = 0;
+    unsigned int *maskingData4 = cargarMascara("M2U.txt", semilla4, num_pixels4);
+    if (!maskingData4) {
+        cout << " No se pudo leer M2.txt\n";
+        delete[] datosP3;
+        delete[] datosI_M;
+        delete[] mascara;
+        return -1;
+    }
+
+    int semilla5 = 0;
+    int num_pixels5 = 0;
+    unsigned int *maskingData5 = cargarMascara("M1U.txt", semilla5, num_pixels5);
+    if (!maskingData5) {
+        cout << " No se pudo leer M2.txt\n";
+        delete[] datosP3;
+        delete[] datosI_M;
+        delete[] mascara;
+        return -1;
+    }
+
+    int semilla6 = 0;
+    int num_pixels6 = 0;
+    unsigned int *maskingData6 = cargarMascara("M0U.txt", semilla6, num_pixels6);
+    if (!maskingData6) {
+        cout << " No se pudo leer M2.txt\n";
         delete[] datosP3;
         delete[] datosI_M;
         delete[] mascara;
@@ -212,28 +244,26 @@ int main()
     aplicarXOR(datosP3, datosI_M, tamañoDatos);
     cout << "XOR aplicado I_D - I_M" << endl;//
 
-    bool formula2 = true;
-    for (int i = 0; i < num_pixels2 * 3; i++) {
-        int suma2 = int(datosP3[semilla2 + i]) + int(mascara[i]);
-        if (suma2 != maskingData2[i]) {
+    bool formula0 = true;
+    for (int i = 0; i < num_pixels0 * 3; i++) {
+        int suma0 = int(datosP3[semilla0 + i]) + int(mascara[i]);
+        if (suma0 != maskingData0[i]) {
             cout << "Diferencia en el índice " << i
-                 << ": esperado " << int(maskingData2[i])
-                 << ", obtenido " << suma2 << endl;
-            formula2 = false;
+                 << ": esperado " << int(maskingData0[i])
+                 << ", obtenido " << suma0 << endl;
+            formula0 = false;
             break;
         }
     }
-    if (formula2)
-        cout << "El resultado del primer XOR conincide con M2.txt" << endl;
+    if (formula0)
+        cout << "El resultado del primer XOR conincide con M6.txt" << endl;
     else
-        cout << "El resultado del primer XOR NO conincide con M2.txt" << endl;
-
-
+        cout << "El resultado del primer XOR NO conincide con M6.txt" << endl;
 
 
     //rotacion de los bit de P3 luego de aplicar el XOR
-    const int bitsRotados = 3;
-    rotacionBits(datosP3, tamañoDatos, bitsRotados);
+    const int bitsRotados1 = 2;
+    rotacionBits(datosP3, tamañoDatos, bitsRotados1);
     cout << "Rotacion aplicada a P3 luego del XOR" << endl;//2
 
     bool formula1 = true;
@@ -248,55 +278,111 @@ int main()
         }
     }
     if (formula1)
+        cout << "El resultado despues de la rotacion conincide con M5.txt" << endl;
+    else
+        cout << "El resultado despues de la rotacion NO conincide con M5.txt" << endl;
+
+
+    aplicarXOR(datosP3, datosI_M, tamañoDatos);
+    cout << "XOR aplicado I_D - I_M" << endl;//
+
+    bool formula2 = true;
+    for (int i = 0; i < num_pixels2 * 3; i++) {
+        int suma2 = int(datosP3[semilla2 + i]) + int(mascara[i]);
+        if (suma2 != maskingData2[i]) {
+            cout << "Diferencia en el índice " << i
+                 << ": esperado " << int(maskingData2[i])
+                 << ", obtenido " << suma2 << endl;
+            formula2 = false;
+            break;
+        }
+    }
+    if (formula2)
+        cout << "El resultado del primer XOR conincide con M4.txt" << endl;
+    else
+        cout << "El resultado del primer XOR NO conincide con M4.txt" << endl;
+
+
+    const int bitsRotados2 = 5;
+    rotacionBits(datosP3, tamañoDatos, bitsRotados2);
+    cout << "Rotacion aplicada a P3 luego del XOR" << endl;//2
+
+    bool formula3 = true;
+    for (int i = 0; i < num_pixels3 * 3; i++) {
+        int suma3 = int(datosP3[semilla3 + i]) + int(mascara[i]);
+        if (suma3 != maskingData3[i]) {
+            cout << "Diferencia en el índice " << i
+                 << ": esperado " << int(maskingData3[i])
+                 << ", obtenido " << suma3 << endl;
+            formula3 = false;
+            break;
+        }
+    }
+    if (formula3)
+        cout << "El resultado despues de la rotacion conincide con M3.txt" << endl;
+    else
+        cout << "El resultado despues de la rotacion NO conincide con M3.txt" << endl;
+
+
+    aplicarXOR(datosP3, datosI_M, tamañoDatos);
+    cout << "XOR aplicado I_D - I_M" << endl;//
+
+    bool formula4 = true;
+    for (int i = 0; i < num_pixels4 * 3; i++) {
+        int suma4 = int(datosP3[semilla4 + i]) + int(mascara[i]);
+        if (suma4 != maskingData4[i]) {
+            cout << "Diferencia en el índice " << i
+                 << ": esperado " << int(maskingData4[i])
+                 << ", obtenido " << suma4 << endl;
+            formula4 = false;
+            break;
+        }
+    }
+    if (formula4)
+        cout << "El resultado del primer XOR conincide con M2.txt" << endl;
+    else
+        cout << "El resultado del primer XOR NO conincide con M2.txt" << endl;
+
+
+    const int bitsRotados3 = 4;
+    rotacionBits(datosP3, tamañoDatos, bitsRotados3);
+    cout << "Rotacion aplicada a P3 luego del XOR" << endl;//2
+
+    bool formula5 = true;
+    for (int i = 0; i < num_pixels5 * 3; i++) {
+        int suma5 = int(datosP3[semilla5 + i]) + int(mascara[i]);
+        if (suma5 != maskingData5[i]) {
+            cout << "Diferencia en el índice " << i
+                 << ": esperado " << int(maskingData5[i])
+                 << ", obtenido " << suma5 << endl;
+            formula5 = false;
+            break;
+        }
+    }
+    if (formula5)
         cout << "El resultado despues de la rotacion conincide con M1.txt" << endl;
     else
         cout << "El resultado despues de la rotacion NO conincide con M1.txt" << endl;
 
 
+    aplicarXOR(datosP3, datosI_M, tamañoDatos);
+    cout << "XOR aplicado I_D - I_M" << endl;//
 
-    //aplicar nuevamente el XOR entre P3 e I_M modificados
-    aplicarXOR(datosP3, datosI_M, tamañoDatos);//3
-    bool formula0 = true;
-    for (int i = 0; i < num_pixels0 * 3; i++) {
-        int suma0 = int(datosP3[semilla0 + i]) + int(mascara[i]);
-        if (suma0 != maskingData0[i]) {
+    bool formula6 = true;
+    for (int i = 0; i < num_pixels6 * 3; i++) {
+        int suma6 = int(datosP3[semilla6 + i]) + int(mascara[i]);
+        if (suma6 != maskingData6[i]) {
             cout << "Diferencia en el índice " << i
-                 << ": esperado " << int(maskingData0[i])
-                 << ", obtenido " << suma0 << endl;
-            formula0 = false;
+                 << ": esperado " << int(maskingData6[i])
+                 << ", obtenido " << suma6 << endl;
+            formula6 = false;
             break;
         }
     }
-    if (formula0)
-        cout << "El resultado final conincide con M0.txt" << endl;
+    if (formula6)
+        cout << "El resultado del primer XOR conincide con M0.txt" << endl;
     else
-        cout << "El resultado final NO conincide con M0.txt" << endl;
-
-
-
-    /*/bool formula = true;
-    for (int i = 0; i < num_pixels * 3; i++) {
-        int suma = int(datosP3[semilla + i]) + int(mascara[i]);
-        if (suma != maskingData[i]) {
-            cout << "Diferencia en el índice " << i
-                 << ": esperado " << int(maskingData[i])
-                 << ", obtenido " << suma << endl;
-            formula = false;
-            break;
-        }
-    }
-
-    if (formula)
-        cout << "La imagen reconstruida coincide con el archivo original (M1.txt o similar)." << endl;
-    else
-        cout << "La imagen reconstruida NO coincide con el archivo original." << endl;/*/
-
-
-
-
-
-
-
+        cout << "El resultado del primer XOR NO conincide con M0.txt" << endl;
 
     /*/const int bitsRotados1 = 5;
     rotacionBits(datosP3, tamañoDatos, bitsRotados1);
@@ -319,7 +405,6 @@ int main()
 
     //exportacion
     bool reconstruccion = guardarImagen(datosP3, anchoP3, altoP3, rutafinal);
-    // cout << "Reconstruccion: " << (reconstruccion ? "Exitosa" : "Fallida") << endl;
     if(reconstruccion){
         cout << "Reconstruccion exitosa" << endl;
     } else {
