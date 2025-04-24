@@ -9,6 +9,7 @@ using namespace std;
 unsigned char* cargarImagen(QString input, int &ancho, int &alto);
 bool guardarImagen(unsigned char* datosPixel, int ancho, int alto, QString rutaSalida);
 unsigned int* cargarMascara(const char* nombreArchivo, int &seed, int &num_pixels);
+//*************funcion aplicar enmascaramiento****************************
 void aplicarXOR(unsigned char* imagenfinal, unsigned char* idistorcionada, int tamaño);
 void rotacionBits(unsigned char* datos, int tamaño, int totalBits);
 
@@ -33,7 +34,7 @@ unsigned char* cargarImagen(QString input, int &ancho, int &alto) {
     return datosPixel;
 }
 
-//*Función para guardar la imagen procesada**************************
+//Función para guardar la imagen procesada*************************
 bool guardarImagen(unsigned char* datosPixel, int ancho, int alto, QString rutaSalida) {
     QImage imagenSalida(ancho, alto, QImage::Format_RGB888);
     for (int y = 0; y < alto; ++y) {
@@ -82,8 +83,8 @@ unsigned int* cargarMascara(const char* nombreArchivo, int &semilla, int &num_pi
     return RGB;
 }
 
-//Funcon aplicacion formula de la guia (Suma despues de cada XOR o cada Rotacion)******
-void aplicarMascara(unsigned char* datos, unsigned int* mascara, int semilla, int tamañoDatos, int numPixelesMascara) {
+/*/Funcon aplicacion formula de la guia (Suma despues de cada XOR o cada Rotacion)******
+//void aplicarMascara(unsigned char* datos, unsigned int* mascara, int semilla, int tamañoDatos, int numPixelesMascara) {
     int totalPixeles = tamañoDatos / 3;
     for (int i = 0; i < numPixelesMascara; ++i) {
         int indiceID = ((i + semilla) % totalPixeles) * 3;
@@ -91,76 +92,17 @@ void aplicarMascara(unsigned char* datos, unsigned int* mascara, int semilla, in
         datos[indiceID + 1] = (256 + datos[indiceID + 1] + mascara[i * 3 + 1]) % 256;
         datos[indiceID + 2] = (256 + datos[indiceID + 2] + mascara[i * 3 + 2]) % 256;
     }
-}
-
-bool verificarResultado(const QString& resultadoRuta, const QString& imagenOriginal,
-                        unsigned char* datosI_M, unsigned int* maskingData,
-                        int ancho, int alto, int semilla, int num_pixels) {
-
-    int anchoResultado = 0, altoResultado = 0;
-    unsigned char* datosResultado = cargarImagen(resultadoRuta, anchoResultado, altoResultado);
-    if (!datosResultado) {
-        cout << "No se pudo cargar la imagen resultado" << endl;
-        return false;
-    }
-
-    // Validar que dimensiones coincidan
-    if (anchoResultado != ancho || altoResultado != alto) {
-        cout << "Dimensiones de imagen de resultado no coinciden" << endl;
-        delete[] datosResultado;
-        return false;
-    }
-
-    int tamañoDatos = ancho * alto * 3;
-
-    // Inversión del proceso
-    aplicarMascara(datosResultado, maskingData, semilla, tamañoDatos, num_pixels); // 3a
-    aplicarXOR(datosResultado, datosI_M, tamañoDatos);                             // 3
-    aplicarMascara(datosResultado, maskingData, semilla, tamañoDatos, num_pixels); // 2a
-    rotacionBits(datosResultado, tamañoDatos, 8 - 3);                               // 2 (inversa)
-    aplicarMascara(datosResultado, maskingData, semilla, tamañoDatos, num_pixels); // 1a
-    aplicarXOR(datosResultado, datosI_M, tamañoDatos);                             // 1
-
-    // Cargar imagen original para comparar
-    int anchoOriginal = 0, altoOriginal = 0;
-    unsigned char* datosOriginal = cargarImagen(imagenOriginal, anchoOriginal, altoOriginal);
-    if (!datosOriginal) {
-        cout << "No se pudo cargar la imagen original I_D" << endl;
-        delete[] datosResultado;
-        return false;
-    }
-
-    // Comparación byte a byte
-    bool iguales = true;
-    for (int i = 0; i < tamañoDatos; i++) {
-        if (datosResultado[i] != datosOriginal[i]) {
-            iguales = false;
-            break;
-        }
-    }
-
-    delete[] datosResultado;
-    delete[] datosOriginal;
-
-    if (iguales) {
-        cout << "✔️ Verificación exitosa: Resultado coincide con I_D" << endl;
-    } else {
-        cout << "❌ Verificación fallida: Resultado no coincide con I_D" << endl;
-    }
-
-    return iguales;
-}
+}/*/
 
 
-
-//*Aplica operación XOR entre imagen y máscara***************************
+//Aplica operación XOR entre imagen y máscara**************************
 void aplicarXOR(unsigned char* imagenfinal, unsigned char* idistorcionada, int tamaño) {
     for (int i = 0; i < tamaño; i++) {
         imagenfinal[i] ^= idistorcionada[i];
     }
 }
 
-//*Funcion para la rotacion de los bits hacia la izquierda**********
+//Funcion para la rotacion de los bits hacia la izquierda*********
 void rotacionBits(unsigned char* datos, int tamaño, int totalBits){
     for(int i = 0; i < tamaño; i++){
         datos[i] = (datos[i] << totalBits) | (datos[i] >> (8 - totalBits));
@@ -174,7 +116,7 @@ int main()
 {
     QString rutaP3 = "I_D.bmp";
     QString rutaI_M = "I_M.bmp";
-    QString rutafinal = "ResultadoTu.bmp";
+    QString rutafinal = "I_DO.bmp";
 
     //Dimensiones de las imagenes
     int anchoP3 = 0;
@@ -210,10 +152,11 @@ int main()
         return -1;
     }
 
-    int semilla = 0;
-    int num_pixels = 0;
-    unsigned int *maskingData = cargarMascara("M0.txt", semilla, num_pixels);
-    if (!maskingData) {
+    //cargar archivo M0.txt que se compara con el primer XOR
+    int semilla0 = 0;
+    int num_pixels0 = 0;
+    unsigned int *maskingData0 = cargarMascara("M0.txt", semilla0, num_pixels0);
+    if (!maskingData0) {
         cout << " No se pudo leer M1.txt\n";
         delete[] datosP3;
         delete[] datosI_M;
@@ -221,37 +164,139 @@ int main()
         return -1;
     }
 
+
+    int semilla1 = 0;
+    int num_pixels1 = 0;
+    unsigned int *maskingData1 = cargarMascara("M1.txt", semilla1, num_pixels1);
+    if (!maskingData1) {
+        cout << " No se pudo leer M1.txt\n";
+        delete[] datosP3;
+        delete[] datosI_M;
+        delete[] mascara;
+        return -1;
+    }
+
+    int semilla2 = 0;
+    int num_pixels2 = 0;
+    unsigned int *maskingData2 = cargarMascara("M2.txt", semilla2, num_pixels2);
+    if (!maskingData2) {
+        cout << " No se pudo leer M1.txt\n";
+        delete[] datosP3;
+        delete[] datosI_M;
+        delete[] mascara;
+        return -1;
+    }
+
+    /*/for (int i = 0; i < num_pixels * 3; i += 3) {
+        cout << "Pixel " << i / 3 << ": ("
+             << maskingData[i] << ", "
+             << maskingData[i + 1] << ", "
+             << maskingData[i + 2] << ")" << endl;
+    }/*/
+
+
     if(anchoP3 != anchoI_M || altoP3 != altoI_M){
         cout << "Las diemensiones no coinciden" << endl;
         delete[] datosP3;
         delete[] datosI_M;
         delete[] mascara;
-        delete[] maskingData;
+        delete[] maskingData0;
+        delete[] maskingData1;
+        delete[] maskingData2;
         return -1;
     }
 
     int tamañoDatos = anchoP3 * altoP3 * 3;
 
-    //XOR a P3 con ayuda de I_M
+    //Primer XOR - XOR a P3 con ayuda de I_M
     aplicarXOR(datosP3, datosI_M, tamañoDatos);
     cout << "XOR aplicado I_D - I_M" << endl;//
 
-    //aplicarMascara(datosP3, maskingData, semilla, tamañoDatos, num_pixels);
-    cout << "1a. Máscara aplicada después del primer XOR" << endl;
+    bool formula2 = true;
+    for (int i = 0; i < num_pixels2 * 3; i++) {
+        int suma2 = int(datosP3[semilla2 + i]) + int(mascara[i]);
+        if (suma2 != maskingData2[i]) {
+            cout << "Diferencia en el índice " << i
+                 << ": esperado " << int(maskingData2[i])
+                 << ", obtenido " << suma2 << endl;
+            formula2 = false;
+            break;
+        }
+    }
+    if (formula2)
+        cout << "El resultado del primer XOR conincide con M2.txt" << endl;
+    else
+        cout << "El resultado del primer XOR NO conincide con M2.txt" << endl;
+
+
+
 
     //rotacion de los bit de P3 luego de aplicar el XOR
     const int bitsRotados = 3;
     rotacionBits(datosP3, tamañoDatos, bitsRotados);
     cout << "Rotacion aplicada a P3 luego del XOR" << endl;//2
 
-    //aplicarMascara(datosP3, maskingData, semilla, tamañoDatos, num_pixels);
-    cout << "1a. Máscara aplicada después del primer XOR" << endl;
+    bool formula1 = true;
+    for (int i = 0; i < num_pixels1 * 3; i++) {
+        int suma1 = int(datosP3[semilla1 + i]) + int(mascara[i]);
+        if (suma1 != maskingData1[i]) {
+            cout << "Diferencia en el índice " << i
+                 << ": esperado " << int(maskingData1[i])
+                 << ", obtenido " << suma1 << endl;
+            formula1 = false;
+            break;
+        }
+    }
+    if (formula1)
+        cout << "El resultado despues de la rotacion conincide con M1.txt" << endl;
+    else
+        cout << "El resultado despues de la rotacion NO conincide con M1.txt" << endl;
+
+
 
     //aplicar nuevamente el XOR entre P3 e I_M modificados
     aplicarXOR(datosP3, datosI_M, tamañoDatos);//3
+    bool formula0 = true;
+    for (int i = 0; i < num_pixels0 * 3; i++) {
+        int suma0 = int(datosP3[semilla0 + i]) + int(mascara[i]);
+        if (suma0 != maskingData0[i]) {
+            cout << "Diferencia en el índice " << i
+                 << ": esperado " << int(maskingData0[i])
+                 << ", obtenido " << suma0 << endl;
+            formula0 = false;
+            break;
+        }
+    }
+    if (formula0)
+        cout << "El resultado final conincide con M0.txt" << endl;
+    else
+        cout << "El resultado final NO conincide con M0.txt" << endl;
 
-    //aplicarMascara(datosP3, maskingData, semilla, tamañoDatos, num_pixels);
-    cout << "1a. Máscara aplicada después del primer XOR" << endl;
+
+
+    /*/bool formula = true;
+    for (int i = 0; i < num_pixels * 3; i++) {
+        int suma = int(datosP3[semilla + i]) + int(mascara[i]);
+        if (suma != maskingData[i]) {
+            cout << "Diferencia en el índice " << i
+                 << ": esperado " << int(maskingData[i])
+                 << ", obtenido " << suma << endl;
+            formula = false;
+            break;
+        }
+    }
+
+    if (formula)
+        cout << "La imagen reconstruida coincide con el archivo original (M1.txt o similar)." << endl;
+    else
+        cout << "La imagen reconstruida NO coincide con el archivo original." << endl;/*/
+
+
+
+
+
+
+
 
     /*/const int bitsRotados1 = 5;
     rotacionBits(datosP3, tamañoDatos, bitsRotados1);
@@ -272,27 +317,6 @@ int main()
     aplicarMascara(datosP3, maskingData, semilla, tamañoDatos, num_pixels);
     cout << "1a. Máscara aplicada después del primer XOR" << endl;/*/
 
-
-    /*bool formula = true;
-    for (int i = 0; i < tamañoDatos; i++) {
-        if ((semilla + i) >= tamañoDatos) break;
-
-        int suma = int(datosTemp[semilla + i]) + int(datosI_M[i]);
-        if (suma & 256 != int(mascara[i])) {
-            cout << "Diferencia en el índice " << i
-                 << ": esperado " << int(mascara[i])
-                 << ", obtenido " << (suma % 256) << endl;
-            formula = false;
-            break;
-        }
-    }
-    if(formula == true)
-        cout << "ResultadoTu.bmp coincide con M1.txt" << endl;
-    else
-        cout << "ResultadoTu.bmp NO coincide con M1.txt" << endl;/*/
-
-
-
     //exportacion
     bool reconstruccion = guardarImagen(datosP3, anchoP3, altoP3, rutafinal);
     // cout << "Reconstruccion: " << (reconstruccion ? "Exitosa" : "Fallida") << endl;
@@ -302,7 +326,6 @@ int main()
         cout << "Error" << endl;
     }
 
-    //verificarResultado(rutafinal, rutaP3, datosI_M, maskingData, anchoP3, altoP3, semilla, num_pixels);
 
     delete[] datosP3;
     delete[] datosI_M;
