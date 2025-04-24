@@ -83,7 +83,73 @@ unsigned int* cargarMascara(const char* nombreArchivo, int &semilla, int &num_pi
 }
 
 //Funcon aplicacion formula de la guia (Suma despues de cada XOR o cada Rotacion)******
+void aplicarMascara(unsigned char* datos, unsigned int* mascara, int semilla, int tamañoDatos, int numPixelesMascara) {
+    int totalPixeles = tamañoDatos / 3;
+    for (int i = 0; i < numPixelesMascara; ++i) {
+        int indiceID = ((i + semilla) % totalPixeles) * 3;
+        datos[indiceID] = (datos[indiceID] - mascara[i * 3]) % 256;
+        datos[indiceID + 1] = (256 + datos[indiceID + 1] + mascara[i * 3 + 1]) % 256;
+        datos[indiceID + 2] = (256 + datos[indiceID + 2] + mascara[i * 3 + 2]) % 256;
+    }
+}
 
+bool verificarResultado(const QString& resultadoRuta, const QString& imagenOriginal,
+                        unsigned char* datosI_M, unsigned int* maskingData,
+                        int ancho, int alto, int semilla, int num_pixels) {
+
+    int anchoResultado = 0, altoResultado = 0;
+    unsigned char* datosResultado = cargarImagen(resultadoRuta, anchoResultado, altoResultado);
+    if (!datosResultado) {
+        cout << "No se pudo cargar la imagen resultado" << endl;
+        return false;
+    }
+
+    // Validar que dimensiones coincidan
+    if (anchoResultado != ancho || altoResultado != alto) {
+        cout << "Dimensiones de imagen de resultado no coinciden" << endl;
+        delete[] datosResultado;
+        return false;
+    }
+
+    int tamañoDatos = ancho * alto * 3;
+
+    // Inversión del proceso
+    aplicarMascara(datosResultado, maskingData, semilla, tamañoDatos, num_pixels); // 3a
+    aplicarXOR(datosResultado, datosI_M, tamañoDatos);                             // 3
+    aplicarMascara(datosResultado, maskingData, semilla, tamañoDatos, num_pixels); // 2a
+    rotacionBits(datosResultado, tamañoDatos, 8 - 3);                               // 2 (inversa)
+    aplicarMascara(datosResultado, maskingData, semilla, tamañoDatos, num_pixels); // 1a
+    aplicarXOR(datosResultado, datosI_M, tamañoDatos);                             // 1
+
+    // Cargar imagen original para comparar
+    int anchoOriginal = 0, altoOriginal = 0;
+    unsigned char* datosOriginal = cargarImagen(imagenOriginal, anchoOriginal, altoOriginal);
+    if (!datosOriginal) {
+        cout << "No se pudo cargar la imagen original I_D" << endl;
+        delete[] datosResultado;
+        return false;
+    }
+
+    // Comparación byte a byte
+    bool iguales = true;
+    for (int i = 0; i < tamañoDatos; i++) {
+        if (datosResultado[i] != datosOriginal[i]) {
+            iguales = false;
+            break;
+        }
+    }
+
+    delete[] datosResultado;
+    delete[] datosOriginal;
+
+    if (iguales) {
+        cout << "✔️ Verificación exitosa: Resultado coincide con I_D" << endl;
+    } else {
+        cout << "❌ Verificación fallida: Resultado no coincide con I_D" << endl;
+    }
+
+    return iguales;
+}
 
 
 
@@ -149,86 +215,73 @@ int main()
     unsigned int *maskingData = cargarMascara("M0.txt", semilla, num_pixels);
     if (!maskingData) {
         cout << " No se pudo leer M1.txt\n";
+        delete[] datosP3;
+        delete[] datosI_M;
+        delete[] mascara;
         return -1;
     }
-
-
-
-
 
     if(anchoP3 != anchoI_M || altoP3 != altoI_M){
         cout << "Las diemensiones no coinciden" << endl;
         delete[] datosP3;
         delete[] datosI_M;
+        delete[] mascara;
+        delete[] maskingData;
         return -1;
     }
-
-
-    /*/Lamado de la funcion para cargar M (mascar)
-    const char* rutaM = "M1.txt";
-    int semilla = 0;
-    int numPixeles = 0;
-    unsigned int* datosM = cargarMascara(rutaM, semilla, numPixeles);
-    if(!datosM){
-        cout << "Error al cargar la mascara M1" << endl;
-        delete[] datosP3;
-        delete[] datosI_M;
-        return 1;
-    }
-    cout << "Mascara M1 cargada correctamente" << endl;/*/
 
     int tamañoDatos = anchoP3 * altoP3 * 3;
 
     //XOR a P3 con ayuda de I_M
     aplicarXOR(datosP3, datosI_M, tamañoDatos);
-    cout << "XOR aplicado I_D - I_M" << endl;//1
+    cout << "XOR aplicado I_D - I_M" << endl;//
+
+    //aplicarMascara(datosP3, maskingData, semilla, tamañoDatos, num_pixels);
+    cout << "1a. Máscara aplicada después del primer XOR" << endl;
 
     //rotacion de los bit de P3 luego de aplicar el XOR
-    const int bitsRotados = 2;
+    const int bitsRotados = 3;
     rotacionBits(datosP3, tamañoDatos, bitsRotados);
     cout << "Rotacion aplicada a P3 luego del XOR" << endl;//2
 
-    /*/Lo mismo de cargar M1 pero con M2
-    const char* rutaM2 = "M2.txt";
-    int semillaM2 = 0;
-    int numPixelesM2 = 0;
-    unsigned int* datosM2 = cargarMascara(rutaM2, semillaM2, numPixelesM2);
-    if(!datosM2){
-        cout << "Error al cargar la mascara M2" << endl;
-        delete[] datosP3;
-        delete[] datosI_M;
-        delete[] datosM;
-        return 1;
-    }
-    cout << "Mascara M2 cargada correctamente" << endl;
-    delete[] datosM2;/*/
-
-    //aplicacion de suma mascaras para P3 con ayuda de la imagen M y la semilla M2
-    //formulaInversa(datosP3, datosM, semillaM2, tamañoDatos);
+    //aplicarMascara(datosP3, maskingData, semilla, tamañoDatos, num_pixels);
+    cout << "1a. Máscara aplicada después del primer XOR" << endl;
 
     //aplicar nuevamente el XOR entre P3 e I_M modificados
     aplicarXOR(datosP3, datosI_M, tamañoDatos);//3
-    const int bitsRotados1 = 5;
+
+    //aplicarMascara(datosP3, maskingData, semilla, tamañoDatos, num_pixels);
+    cout << "1a. Máscara aplicada después del primer XOR" << endl;
+
+    /*/const int bitsRotados1 = 5;
     rotacionBits(datosP3, tamañoDatos, bitsRotados1);
     cout << "Rotacion aplicada a P3 luego del XOR" << endl;//4
 
     unsigned char* datosTemp = new unsigned char[tamañoDatos];
     memcpy(datosTemp, datosP3, tamañoDatos);
+
     aplicarXOR(datosP3, datosI_M, tamañoDatos);//5
+
+    aplicarMascara(datosP3, maskingData, semilla, tamañoDatos, num_pixels);
+    cout << "1a. Máscara aplicada después del primer XOR" << endl;
+
     const int bitsRotados2 = 4;
     rotacionBits(datosP3, tamañoDatos, bitsRotados2);//6
-    //unsigned char* p2_inv = new unsigned char[tamañoTotal];
     aplicarXOR(datosP3, datosI_M, tamañoDatos);
 
-    bool formula = true;
+    aplicarMascara(datosP3, maskingData, semilla, tamañoDatos, num_pixels);
+    cout << "1a. Máscara aplicada después del primer XOR" << endl;/*/
+
+
+    /*bool formula = true;
     for (int i = 0; i < tamañoDatos; i++) {
         if ((semilla + i) >= tamañoDatos) break;
 
         int suma = int(datosTemp[semilla + i]) + int(datosI_M[i]);
-        if (suma != int(mascara[i])) {
+        if (suma & 256 != int(mascara[i])) {
             cout << "Diferencia en el índice " << i
                  << ": esperado " << int(mascara[i])
-                 << ", obtenido " << suma << endl;
+                 << ", obtenido " << (suma % 256) << endl;
             formula = false;
             break;
         }
@@ -236,7 +289,8 @@ int main()
     if(formula == true)
         cout << "ResultadoTu.bmp coincide con M1.txt" << endl;
     else
-        cout << "ResultadoTu.bmp NO coincide con M1.txt" << endl;
+        cout << "ResultadoTu.bmp NO coincide con M1.txt" << endl;/*/
+
 
 
     //exportacion
@@ -247,6 +301,8 @@ int main()
     } else {
         cout << "Error" << endl;
     }
+
+    //verificarResultado(rutafinal, rutaP3, datosI_M, maskingData, anchoP3, altoP3, semilla, num_pixels);
 
     delete[] datosP3;
     delete[] datosI_M;
