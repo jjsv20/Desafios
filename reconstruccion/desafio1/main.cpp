@@ -296,6 +296,17 @@ int main()
         cout << "Error" << endl;
     }
 
+#ifdef _WIN32
+    system("start I_DO.bmp");
+#elif __APPLE__
+    system("open I_DO.bmp");
+#elif __linux__
+    system("xdg-open I_DO.bmp");
+#else
+    cout << "No se puede abrir automáticamente en este sistema operativo." << endl;
+#endif
+
+
 
     delete[] datosID;
     delete[] datosIM;
