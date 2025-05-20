@@ -11,6 +11,10 @@ bool iniciarSesion(string& nombreUsuario, string& tipoRol){
     cout << "Ingrese contraseña: ";
     cin >> contraseña;
     ifstream archivo("usuarios.txt");
+    if (!archivo.is_open()) {
+        cout << "Error al abrir el archivo de usuarios." << endl;
+        return false;
+    }
     string linea;
     while(getline(archivo, linea)){
         size_t p1 = linea.find(',');
@@ -28,14 +32,58 @@ bool iniciarSesion(string& nombreUsuario, string& tipoRol){
     return false;
 }
 
+void menuHuesped(){
+    int opcionHuesped;
+    do{
+        cout << "\n Menu Huesped" << endl;
+        cout << "\n1. Reservar alojamieto" << endl;
+        cout << "2. Anular reservacion" << endl;
+        cout << "3. Mis reservaciones" << endl;
+        cout << "4. Cerrar sesion" << endl;
+        cout << "5. Seleccione una opcion: ";
+        cin >> opcionHuesped;
+    }while(opcionHuesped != 4);
+}
+
+void menuAnfitrion(){
+    int opcionAnfitrion;
+    do {
+        cout << "\n Menu Anfitrion" << endl;
+        cout << "1. Consultar reservaciones" << endl;
+        cout << "2. Anular reservacion" << endl;
+        cout << "3. Actualizar historico" << endl;
+        cout << "4. Cerrar sesion" << endl;
+        cout << "Seleccione una opcion: ";
+        cin >> opcionAnfitrion;
+    }while(opcionAnfitrion != 4);
+}
+
+void menuPrincipal(){
+    int opcionPrincipal;
+    do {
+        cout << "\n -=-=-=-= UdeAStay -=-=-=-=" << endl;
+        cout << "1. Iniciar sesion" << endl;
+        cout << "2. Salir" << endl;
+        cout << "Seleccione una opcion: ";
+        cin >> opcionPrincipal;
+        if(opcionPrincipal == 1){
+            string usuario, rol;
+            if(iniciarSesion(usuario, rol)){
+                cout << "Bienvenido, " << usuario << endl;
+                if(rol == "H"){
+                    menuHuesped();
+                }else if(rol == "A"){
+                    menuAnfitrion();
+                }else{
+                    cout << "Usuario no registrado";
+                }
+            }
+        }
+    }while(opcionPrincipal != 2);
+}
+
 int main()
 {
-    cout << "Hello World!" << endl;
-    string usuario, rol;
-    if(iniciarSesion(usuario, rol)){
-        if(rol == "H"){
-            cout << "Bienvenido " << usuario;
-        }
-    }
+    menuPrincipal();
     return 0;
 }
