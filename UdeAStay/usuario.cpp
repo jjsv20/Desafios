@@ -3,12 +3,12 @@
 
 Usuario::Usuario(const char* nomUsua, const char* contra, char r, const char* doc, int meses, float p) {
     nombreUsuario = new char[strlen(nomUsua) + 1];
-    strcpy(nombreUsuario, nomUsua);
+    strncpy(nombreUsuario, nomUsua, strlen(nomUsua));
     contraseña = new char[strlen(contra) + 1];
-    strcpy(contraseña, contra);
+    strncpy(contraseña, contra, strlen(contra));
     tipoRol = r;
     documento = new char[strlen(doc) + 1];
-    strcpy(documento, doc);
+    strncpy(documento, doc, strlen(doc));
     mesesAntiguedad = meses;
     puntuacion = p;
 }

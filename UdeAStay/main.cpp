@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void menuHuesped(){
+void menuHuesped(Usuario* usuario){
     int opcionHuesped;
     do{
         cout << "\n Menu Huesped" << endl;
