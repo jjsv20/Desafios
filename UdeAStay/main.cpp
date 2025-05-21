@@ -69,7 +69,7 @@ void menuPrincipal(){
         if(opcionPrincipal == 1){
             string usuario, rol;
             if(iniciarSesion(usuario, rol)){
-                cout << "Bienvenido, " << usuario << endl;
+                cout << "\nBienvenido, " << usuario << endl;
                 if(rol == "H"){
                     menuHuesped();
                 }else if(rol == "A"){
