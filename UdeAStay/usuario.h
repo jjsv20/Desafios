@@ -16,6 +16,9 @@ public:
     const char* getNombreUsuario() const;
     const char* getPassword() const;
     char getRol() const;
+    const char* getDocumento() const;
+    int getMesesAntiguedad() const;
+    float getPuntuacion() const;
 };
 
 #endif // USUARIO_H

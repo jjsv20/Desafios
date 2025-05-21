@@ -7,7 +7,8 @@ Usuario::Usuario(const char* nomUsua, const char* contra, char r, const char* do
     contraseña = new char[strlen(contra) + 1];
     strcpy(contraseña, contra);
     tipoRol = r;
-    documento = doc;
+    documento = new char[strlen(doc) + 1];
+    strcpy(documento, doc);
     mesesAntiguedad = meses;
     puntuacion = p;
 }
@@ -15,6 +16,7 @@ Usuario::Usuario(const char* nomUsua, const char* contra, char r, const char* do
 Usuario::~Usuario(){
     delete[] nombreUsuario;
     delete[] contraseña;
+    delete[] documento;
 }
 
 const char* Usuario::getNombreUsuario() const{
@@ -25,6 +27,18 @@ const char* Usuario::getPassword() const{
     return contraseña;
 }
 
-const Usuario::getRol() const{
-    return rol;
+char Usuario::getRol() const{
+    return tipoRol;
+}
+
+const char* Usuario::getDocumento() const {
+    return documento;
+}
+
+int Usuario::getMesesAntiguedad() const {
+    return mesesAntiguedad;
+}
+
+float Usuario::getPuntuacion() const {
+    return puntuacion;
 }
