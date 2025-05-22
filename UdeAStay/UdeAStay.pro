@@ -7,6 +7,7 @@ SOURCES += \
         alojamiento.cpp \
         main.cpp \
         reservacion.cpp \
+        reservarAlojamiento.cpp \
         sesion.cpp \
         usuario.cpp
 

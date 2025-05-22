@@ -19,7 +19,7 @@ private:
     char** fechasReservadas;
     int totalFechas;
 public:
-    Alojamiento(const char* nombreAlojamiento, const char* codigoAlojamiento, Usuario* anfitrion, const char* departamento, const char* municipio, char tipo, const char* direccion, float precioPorNoche, char** amenidades, char** fechasReservadas, int totalFechas);
+    Alojamiento(const char* nombreAlojamiento_, const char* codigoAlojamiento_, Usuario* anfitrion_, const char* departamento_, const char* municipio_, char tipo_, const char* direccion_, float precioPorNoche_, char** amenidades_, int cantidadAmenidades_, char** fechasReservadas_, int totalFechas_);
 
     ~Alojamiento();
 
@@ -33,8 +33,9 @@ public:
     float getPrecioPorNoche() const;
     const char** getAmenidades();
 
+
     bool estaDisponible(const char* fechaInicio, int noches);
-    void mostrarAlojamientos();
+    void mostrarAlojamientos() const;
 };
 
 #endif // ALOJAMIENTO_H

@@ -5,13 +5,12 @@ class Usuario
 {
 private:
     char* nombreUsuario;
-    char* contraseña;
-    char tipoRol;
     char* documento;
+    char tipoRol;
     int mesesAntiguedad;
     float puntuacion;
 public:
-    Usuario(const char* nombreUsu, const char* password, char rol, const char* documento, int meses, float punt);
+    Usuario(const char* nombreUsuario_, const char* documento_, char tipoRol_, int meses_, float puntuacion_);
     ~Usuario();
     const char* getNombreUsuario() const;
     const char* getPassword() const;

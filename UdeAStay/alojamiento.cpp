@@ -1,31 +1,32 @@
 #include "alojamiento.h"
+#include <iostream>
 #include <cstring>
 
-Alojamiento::Alojamiento(const char* nombreA, const char* codigoA, Usuario* _anfitrion, const char* depa, const char* mun, char t, const char* direcc, float precio, char** amenids, char** fechas, int totalF) {
-    nombreAlojamiento = new char[strlen(nombreA) + 1];
-    strcpy(nombreAlojamiento, nombreA);
-    codigoAlojamiento = new char[strlen(codigoA) + 1];
-    strcpy(codigoAlojamiento, codigoA);
-    anfitrion = _anfitrion;
-    departamento = new char[strlen(depa) + 1];
-    strcpy(departamento, depa);
-    municipio = new char[strlen(mun) + 1];
-    strcpy(municipio, mun);
-    tipo = t;
-    direccion = new char [strlen(direcc) + 1];
-    strcpy(direccion, direcc);
-    precioPorNoche = precio;
-    cantidadAmenidades = 0;
+Alojamiento::Alojamiento(const char* nombreAlojamiento_, const char* codigoAlojamiento_, Usuario* anfitrion_, const char* departamento_, const char* municipio_, char tipo_, const char* direccion_, float precioPorNoche_, char** amenidades_, int cantidaAmenidades_, char** fechasReservadas_, int totalFechas_) {
+    nombreAlojamiento = new char[strlen(nombreAlojamiento_) + 1];
+    strcpy(nombreAlojamiento, nombreAlojamiento_);
+    codigoAlojamiento = new char[strlen(codigoAlojamiento_) + 1];
+    strcpy(codigoAlojamiento, codigoAlojamiento_);
+    anfitrion = anfitrion_;
+    departamento = new char[strlen(departamento_) + 1];
+    strcpy(departamento, departamento_);
+    municipio = new char[strlen(municipio_) + 1];
+    strcpy(municipio, municipio_);
+    tipo = tipo_;
+    direccion = new char [strlen(direccion_) + 1];
+    strcpy(direccion, direccion_);
+    precioPorNoche = precioPorNoche_;
+    cantidadAmenidades = cantidaAmenidades_;
     amenidades = new char*[cantidadAmenidades];
     for(int i = 0; i < cantidadAmenidades; ++i){
-        amenidades[i] = new char[strlen(amenids[i]) + 1];
-        strcpy(amenidades[i], amenids[i]);
+        amenidades[i] = new char[strlen(amenidades_[i]) + 1];
+        strcpy(amenidades[i], amenidades_[i]);
     }
-    totalFechas = totalF;
+    totalFechas = totalFechas_;
     fechasReservadas = new char*[totalFechas];
     for (int i = 0; i < totalFechas; ++i) {
-        fechasReservadas[i] = new char[strlen(fechas[i]) + 1];
-        strcpy(fechasReservadas[i], fechas[i]);
+        fechasReservadas[i] = new char[strlen(fechasReservadas_[i]) + 1];
+        strcpy(fechasReservadas[i], fechasReservadas_[i]);
     }
 }
 
@@ -45,6 +46,17 @@ Alojamiento::~Alojamiento(){
     delete[] fechasReservadas;
 }
 
-//void Alojamiento::mostrarAlojamientos() const{
-
-//}
+void Alojamiento::mostrarAlojamientos() const{
+    std::cout << "Nombre del alojamiento: " << nombreAlojamiento << std::endl;
+    std::cout << "Codigo: " << codigoAlojamiento << std::endl;
+    std::cout << "Ubicacion: " << municipio << ", " << departamento << std::endl;
+    std::cout << "Direccion: " << direccion << std::endl;
+    std::cout << "Tipo: " << tipo << std::endl;
+    std::cout << "Precio por noche: " << precioPorNoche << std::endl;
+    for(int i = 0; i < cantidadAmenidades; ++i){
+        std::cout << (amenidades[i] ? amenidades[i] : "N/A");
+        if(i < cantidadAmenidades - 1){
+            std::cout << ", ";
+        }
+    }
+}

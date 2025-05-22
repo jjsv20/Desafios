@@ -17,7 +17,7 @@ private:
     float monto;
     char* anotaciones;
 public:
-    Reservacion(const char* fechaEntrada, int duracion, const char* codigoReservacaion, Alojamiento* alojamiento, Usuario* huesped, const char* metodoDePago, const char* fechadePago, float monto, const char* anotaciones);
+    Reservacion(const char* fechaEntrada_, int duracion_, const char* codigoReservacion_, Alojamiento* alojamiento_, Usuario* huesped_, const char* metodoDePago_, const char* fechadePago_, float monto_, const char* anotaciones_);
     ~Reservacion();
     const char* getFechaEntrada() const;
     int getDuracion() const;
@@ -28,6 +28,8 @@ public:
     const char* getFechaDePago() const;
     float getMonto() const;
     const char* getAnotaciones() const;
+
+    void mostrarReservacion() const;
 };
 
 #endif // RESERVACION_H

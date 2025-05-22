@@ -1,30 +1,23 @@
 #include "usuario.h"
 #include <cstring>
 
-Usuario::Usuario(const char* nomUsua, const char* contra, char r, const char* doc, int meses, float p) {
-    nombreUsuario = new char[strlen(nomUsua) + 1];
-    strncpy(nombreUsuario, nomUsua, strlen(nomUsua));
-    contraseña = new char[strlen(contra) + 1];
-    strncpy(contraseña, contra, strlen(contra));
-    tipoRol = r;
-    documento = new char[strlen(doc) + 1];
-    strncpy(documento, doc, strlen(doc));
-    mesesAntiguedad = meses;
-    puntuacion = p;
+Usuario::Usuario(const char* nombreUsuario_, const char* documento_, char tipoRol_, int meses_, float puntuacion_) {
+    nombreUsuario = new char[strlen(nombreUsuario_) + 1];
+    strncpy(nombreUsuario, nombreUsuario_, strlen(nombreUsuario_));
+    documento = new char[strlen(documento_) + 1];
+    strncpy(documento, documento_, strlen(documento_));
+    tipoRol = tipoRol_;
+    mesesAntiguedad = meses_;
+    puntuacion = puntuacion_;
 }
 
 Usuario::~Usuario(){
     delete[] nombreUsuario;
-    delete[] contraseña;
     delete[] documento;
 }
 
 const char* Usuario::getNombreUsuario() const{
     return nombreUsuario;
-}
-
-const char* Usuario::getPassword() const{
-    return contraseña;
 }
 
 char Usuario::getRol() const{
