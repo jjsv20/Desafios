@@ -5,12 +5,12 @@ Reservacion::Reservacion(const char* fechaEn, int durac, const char* codigoRese,
     fechaEntrada = new char[strlen(fechaEn) + 1];
     strcpy(fechaEntrada, fechaEn);
     duracion = durac;
-    codigoReservacaion = new char[strlen(codigoRese) + 1];
-    strcpy(codigoReservacaion, codigoRese);
+    codigoReservacion = new char[strlen(codigoRese) + 1];
+    strcpy(codigoReservacion, codigoRese);
     alojamiento = alojam;
     huesped = huesp;
     metodoDePago = new char[strlen(metodoP) + 1];
-    strcpy(metodoDePago, metodoDePago);
+    strcpy(metodoDePago, metodoP);
     fechadePago = new char[strlen(fechaP) + 1];
     strcpy(fechadePago, fechaP);
     monto = mont;
@@ -20,7 +20,7 @@ Reservacion::Reservacion(const char* fechaEn, int durac, const char* codigoRese,
 
 Reservacion::~Reservacion(){
     delete[] fechaEntrada;
-    delete[] codigoReservacaion;
+    delete[] codigoReservacion;
     delete[] metodoDePago;
     delete[] fechadePago;
     delete[] anotaciones;
@@ -46,12 +46,12 @@ Usuario* Reservacion::getHuesped() const {
     return huesped;
 }
 
-const char* Reservacion::getMetodoPago() const {
-    return metodoPago;
+const char* Reservacion::getMetodoDePago() const {
+    return metodoDePago;
 }
 
-const char* Reservacion::getFechaPago() const {
-    return fechaPago;
+const char* Reservacion::getFechaDePago() const {
+    return fechadePago;
 }
 
 float Reservacion::getMonto() const {

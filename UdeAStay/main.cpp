@@ -46,7 +46,7 @@ void menuPrincipal(Sesion& sesion){
             if(usuario != nullptr){
                 cout << "\nBienvenido, " << usuario->getNombreUsuario() << endl;
                 if(usuario->getRol() == 'H'){
-                    menuHuesped();
+                    menuHuesped(usuario);
                 }else if(usuario->getRol() == 'A'){
                     menuAnfitrion();
                 }else{

@@ -45,6 +45,6 @@ Alojamiento::~Alojamiento(){
     delete[] fechasReservadas;
 }
 
-void Alojamiento::mostrarAlojamientos() const{
+//void Alojamiento::mostrarAlojamientos() const{
 
-}
+//}
