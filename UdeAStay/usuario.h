@@ -18,6 +18,11 @@ public:
     const char* getDocumento() const;
     int getMesesAntiguedad() const;
     float getPuntuacion() const;
+    bool esHuesped() const;
+    bool esAnfitrion() const;
 };
+
+Usuario* cargarUsuarioDesdeArchivo(const char* usuario, const char* documento);
+
 
 #endif // USUARIO_H

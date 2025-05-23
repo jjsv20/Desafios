@@ -5,8 +5,15 @@
 
 class Sesion
 {
+private:
+    Usuario* usuarioActivo;
 public:
-    Usuario* iniciarSesion();
+    Sesion();
+    ~Sesion();
+
+    bool iniciarSesion(const char* nombreUsuario, const char* documento);
+    void cerrarSesion();
+    Usuario* getUsuarioActivo() const;
 };
 
 #endif // SESION_H

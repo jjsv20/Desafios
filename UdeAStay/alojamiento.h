@@ -24,7 +24,7 @@ public:
     ~Alojamiento();
 
     const char* getNombreAlojamiento();
-    const char* getCodigoAlojamiento();
+    const char* getCodigoAlojamiento() const;
     Usuario* getAnfitrion();
     const char* getDepartamento();
     const char* getMunicipio();

@@ -7,30 +7,66 @@
 
 using namespace std;
 
-void menuHuesped(Usuario* usuario){
+void menuHuesped(Usuario* usuario) {
     int opcionHuesped;
-    do{
-        cout << "\n Menu Huesped" << endl;
-        cout << "\n1. Reservar alojamieto" << endl;
-        cout << "2. Anular reservacion" << endl;
+    do {
+        cout << "\n--- Menú Huésped ---" << endl;
+        cout << "1. Reservar alojamiento" << endl;
+        cout << "2. Anular reservación" << endl;
         cout << "3. Mis reservaciones" << endl;
-        cout << "4. Cerrar sesion" << endl;
-        cout << "5. Seleccione una opcion: ";
+        cout << "4. Cerrar sesión" << endl;
+        cout << "Seleccione una opción: ";
         cin >> opcionHuesped;
-    }while(opcionHuesped != 4);
+
+        switch (opcionHuesped) {
+        case 1:
+            cout << "Función para reservar alojamiento aún no implementada.\n";
+            break;
+        case 2:
+            cout << "Función para anular reservación aún no implementada.\n";
+            break;
+        case 3:
+            cout << "Función para ver reservaciones aún no implementada.\n";
+            break;
+        case 4:
+            cout << "Cerrando sesión...\n";
+            break;
+        default:
+            cout << "Opción inválida.\n";
+        }
+
+    } while (opcionHuesped != 4);
 }
 
-void menuAnfitrion(){
+void menuAnfitrion(Usuario* usuario) {
     int opcionAnfitrion;
     do {
-        cout << "\n Menu Anfitrion" << endl;
+        cout << "\n--- Menú Anfitrión ---" << endl;
         cout << "1. Consultar reservaciones" << endl;
-        cout << "2. Anular reservacion" << endl;
-        cout << "3. Actualizar historico" << endl;
-        cout << "4. Cerrar sesion" << endl;
-        cout << "Seleccione una opcion: ";
+        cout << "2. Anular reservación" << endl;
+        cout << "3. Actualizar histórico" << endl;
+        cout << "4. Cerrar sesión" << endl;
+        cout << "Seleccione una opción: ";
         cin >> opcionAnfitrion;
-    }while(opcionAnfitrion != 4);
+
+        switch (opcionAnfitrion) {
+        case 1:
+            cout << "Función para consultar reservaciones aún no implementada.\n";
+            break;
+        case 2:
+            cout << "Función para anular reservación aún no implementada.\n";
+            break;
+        case 3:
+            cout << "Función para actualizar histórico aún no implementada.\n";
+            break;
+        case 4:
+            cout << "Cerrando sesión...\n";
+            break;
+        default:
+            cout << "Opción inválida.\n";
+        }
+
+    } while (opcionAnfitrion != 4);
 }
 
 void menuPrincipal(Sesion& sesion){
@@ -42,19 +78,24 @@ void menuPrincipal(Sesion& sesion){
         cout << "Seleccione una opcion: ";
         cin >> opcionPrincipal;
         if(opcionPrincipal == 1){
-            Usuario* usuario = sesion.iniciarSesion();
-            if(usuario != nullptr){
+            string nombreUsuario, documento;
+            cout << "\nIngrese nombre de usuario: ";
+            cin >> nombreUsuario;
+            cout << "Ingrese documento: ";
+            cin >> documento;
+            if(sesion.iniciarSesion(nombreUsuario.c_str(), documento.c_str())){
+                Usuario* usuario = sesion.getUsuarioActivo();
                 cout << "\nBienvenido, " << usuario->getNombreUsuario() << endl;
-                if(usuario->getRol() == 'H'){
+                if(usuario->esHuesped()){
                     menuHuesped(usuario);
-                }else if(usuario->getRol() == 'A'){
-                    menuAnfitrion();
+                }else if(usuario->esAnfitrion()){
+                    menuAnfitrion(usuario);
                 }else{
-                    cout << "Usuario no registrado";
+                    cout << "Usuario o documento incorrectos." << endl;
                 }
-                delete usuario;
+                sesion.cerrarSesion();
             }else{
-                cout << "Usuario o contraseña invalidos";
+                cout << "Usuario o documento incorrectos." << endl;
             }
         }
     }while(opcionPrincipal != 2);

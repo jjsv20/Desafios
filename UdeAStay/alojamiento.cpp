@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cstring>
 
+using namespace std;
+
 Alojamiento::Alojamiento(const char* nombreAlojamiento_, const char* codigoAlojamiento_, Usuario* anfitrion_, const char* departamento_, const char* municipio_, char tipo_, const char* direccion_, float precioPorNoche_, char** amenidades_, int cantidaAmenidades_, char** fechasReservadas_, int totalFechas_) {
     nombreAlojamiento = new char[strlen(nombreAlojamiento_) + 1];
     strcpy(nombreAlojamiento, nombreAlojamiento_);
@@ -46,17 +48,25 @@ Alojamiento::~Alojamiento(){
     delete[] fechasReservadas;
 }
 
+const char* Alojamiento::getCodigoAlojamiento() const {
+    return codigoAlojamiento;
+}
+
+void Alojamiento::cargarArchivoAlojamientos(){
+
+}
+
 void Alojamiento::mostrarAlojamientos() const{
-    std::cout << "Nombre del alojamiento: " << nombreAlojamiento << std::endl;
-    std::cout << "Codigo: " << codigoAlojamiento << std::endl;
-    std::cout << "Ubicacion: " << municipio << ", " << departamento << std::endl;
-    std::cout << "Direccion: " << direccion << std::endl;
-    std::cout << "Tipo: " << tipo << std::endl;
-    std::cout << "Precio por noche: " << precioPorNoche << std::endl;
+    cout << "Nombre del alojamiento: " << nombreAlojamiento << endl;
+    cout << "Codigo: " << codigoAlojamiento << endl;
+    cout << "Ubicacion: " << municipio << ", " << departamento << endl;
+    cout << "Direccion: " << direccion << endl;
+    cout << "Tipo: " << tipo << endl;
+    cout << "Precio por noche: " << precioPorNoche << endl;
     for(int i = 0; i < cantidadAmenidades; ++i){
-        std::cout << (amenidades[i] ? amenidades[i] : "N/A");
+        cout << (amenidades[i] ? amenidades[i] : "N/A");
         if(i < cantidadAmenidades - 1){
-            std::cout << ", ";
+            cout << ", ";
         }
     }
 }
