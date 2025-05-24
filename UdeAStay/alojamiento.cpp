@@ -115,12 +115,13 @@ void Alojamiento::cargarArchivoAlojamientos(Alojamiento**& alojamientos, int& to
         string municipio = linea.substr(p4 + 1, p5 - p4 - 1);
         char tipo = linea[p5 + 1];
         string direccion = linea.substr(p6 + 1, p7 - p6 - 1);
-        float precio = stof(linea.substr(p7 + 1, p8 - p7 - 1));
+        float precioNoche = stof(linea.substr(p7 + 1, p8 - p7 - 1));
         string amenidadesAloja = linea.substr(p8 + 1, p9 - p8 - 1);
         string fechasAloja = linea.substr(p9 + 1);
+
         Usuario* anfitrion = 0;
         for (int i = 0; i < totalUsuarios; ++i){
-            if (strcmp(usuarios[i]->getNombreUsuario(), nombreAnfitrion) == 0){
+            if(strcmp(usuarios[i]->getNombreUsuario(), nombreAnfitrion.c_str()) == 0){
                 anfitrion = usuarios[i];
             }
         }
@@ -173,9 +174,9 @@ void Alojamiento::cargarArchivoAlojamientos(Alojamiento**& alojamientos, int& to
             strcpy(fechas[jdx], fechasAloja.c_str());
         }
 
-        if(totalAlojamientos >= capacidadInicial){
-            capacidadInicial *= 2;
-            Alojamiento** nuevo = new Alojamiento*[capacidadInicial];
+        if(totalAlojamientos >= capacidad){
+            capacidad *= 2;
+            Alojamiento** nuevo = new Alojamiento*[capacidad];
             for(int i = 0; i < totalAlojamientos; ++i){
                 nuevo[i] = alojamientos[i];
             }

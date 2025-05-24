@@ -2,14 +2,18 @@
 #include <cstring>
 #include <iostream>
 
-Reservacion::Reservacion(const char* fechaEntrada_, int duracion_, const char* codigoReservacion_, Alojamiento* alojamiento_, Usuario* huesped_, const char* metodoDePago_, const char* fechadePago_, float monto_, const char* anotaciones_) {
+using namespace std;
+
+Reservacion::Reservacion(const char* fechaEntrada_, int duracion_, const char* codigoReservacion_, Alojamiento* codigoAlojamiento_, Usuario* documentoHuesped_, const char* metodoDePago_, const char* fechadePago_, float monto_, const char* anotaciones_) {
     fechaEntrada = new char[strlen(fechaEntrada_) + 1];
     strcpy(fechaEntrada, fechaEntrada_);
     duracion = duracion_;
     codigoReservacion = new char[strlen(codigoReservacion_) + 1];
     strcpy(codigoReservacion, codigoReservacion_);
-    alojamiento = alojamiento_;
-    huesped = huesped_;
+    codigoAlojamiento = new char[strlen(codigoAlojamiento_) + 1];
+    strcpy(codigoAlojamiento, codigoAlojamiento_);
+    documentoHuesped = new char[strlen(documentoHuesped_) + 1];
+    strcpy(documentoHuesped, documentoHuesped_);
     metodoDePago = new char[strlen(metodoDePago_) + 1];
     strcpy(metodoDePago, metodoDePago_);
     fechadePago = new char[strlen(fechadePago_) + 1];
@@ -22,6 +26,8 @@ Reservacion::Reservacion(const char* fechaEntrada_, int duracion_, const char* c
 Reservacion::~Reservacion(){
     delete[] fechaEntrada;
     delete[] codigoReservacion;
+    delete[] codigoAlojamiento;
+    delete[] documentoHuesped;
     delete[] metodoDePago;
     delete[] fechadePago;
     delete[] anotaciones;
@@ -39,12 +45,12 @@ const char* Reservacion::getCodigoReservacion() const {
     return codigoReservacion;
 }
 
-Alojamiento* Reservacion::getAlojamiento() const {
-    return alojamiento;
+Alojamiento* Reservacion::getCodigoAlojamiento() const {
+    return codigoAlojamiento;
 }
 
-Usuario* Reservacion::getHuesped() const {
-    return huesped;
+Usuario* Reservacion::getDocumentoHuesped() const {
+    return documentoHuesped;
 }
 
 const char* Reservacion::getMetodoDePago() const {
@@ -64,15 +70,14 @@ const char* Reservacion::getAnotaciones() const {
 }
 
 void Reservacion::mostrarReservacion()const {
-    std::cout << "Código de reservación: " << codigoReservacion << std::endl;
-    std::cout << "Alojamiento: ";
-    if (alojamiento) alojamiento->mostrarAlojamientos();
-    std::cout << "Huésped: ";
-    if (huesped) std::cout << huesped->getNombreUsuario() << std::endl;
-    std::cout << "Fecha de entrada: " << fechaEntrada << std::endl;
-    std::cout << "Duración: " << duracion << " noches" << std::endl;
-    std::cout << "Método de pago: " << metodoDePago << std::endl;
-    std::cout << "Fecha de pago: " << fechadePago << std::endl;
-    std::cout << "Monto: " << monto << std::endl;
-    std::cout << "Anotaciones: " << anotaciones << std::endl;
+    cout << "Código de reservación: " << codigoReservacion << endl;
+    cout << "Alojamiento: " << ;
+    cout << "Huésped: ";
+    if ('H') cout << documentoHuesped->getNombreUsuario() <<endl;
+    cout << "Fecha de entrada: " << fechaEntrada << endl;
+    cout << "Duración: " << duracion << " noches" << endl;
+    cout << "Método de pago: " << metodoDePago << endl;
+    cout << "Fecha de pago: " << fechadePago << endl;
+    cout << "Monto: " << monto << endl;
+    cout << "Anotaciones: " << anotaciones << endl;
 }

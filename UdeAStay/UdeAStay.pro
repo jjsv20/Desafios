@@ -4,6 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
+        ControlReservaciones.cpp \
         alojamiento.cpp \
         main.cpp \
         manejoreservas.cpp \
