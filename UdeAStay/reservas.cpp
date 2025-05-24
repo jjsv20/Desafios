@@ -1,4 +1,4 @@
-#include "reservas.h"
+/*/#include "reservas.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -102,4 +102,4 @@ void Reservas::cargarArchivoReservas(Usuario** usuarios, int totalUsuarios, Aloj
         }
     }
     archivo.close();
-}
+}/*/

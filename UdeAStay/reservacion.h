@@ -23,14 +23,18 @@ public:
     int getDuracion() const;
     const char* getCodigoReservacion() const;
     Alojamiento* getCodigoAlojamiento() const;
-    Usuario* getHuesped() const;
+    Usuario* getDocumentoHuesped() const;
     const char* getMetodoDePago() const;
     const char* getFechaDePago() const;
     float getMonto() const;
     const char* getAnotaciones() const;
 
     //void mostrarReservacion() const;
-    static void cargarArchivoReservas(Reservacion**& reservas, int& total);
+    static void cargarReservas(
+        Reservacion**& reservas, int& total,
+        Usuario** usuarios, int totalUsuarios,
+        Alojamiento** alojamientos, int totalAlojamientos
+        );
 };
 
 #endif // RESERVACION_H

@@ -7,7 +7,7 @@
 using namespace std;
 
 
-void reservarAlojamiento(Usuario* usuario, Alojamiento** alojamientos, int totalAlojamientos, Reservas& reservas){
+/*/void reservarAlojamiento(Usuario* usuario, Alojamiento** alojamientos, int totalAlojamientos, Reservas& reservas){
     int opcionBusqueda;
     cout << "\nOpciones de busqueda: " << endl;
     cout << "1. Por filros (fecha, municipio, noches, puntuacion)" << endl;
@@ -59,4 +59,4 @@ void reservarAlojamiento(Usuario* usuario, Alojamiento** alojamientos, int total
             return;
         }
     }
-}
+}/*/

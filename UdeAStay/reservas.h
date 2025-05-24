@@ -20,7 +20,7 @@ public:
     int getCantidadReservas() const;
     Reservacion* getlistaReservas(int idx) const;
 
-    void cargarArchivoReservas(Usuario** usuarios, int totalUsuarios, Alojamiento** alojamientos, int totalAlojamientos);
+    static void cargarArchivoReservas(Reservacion**& reservas, int& totalReservas, Usuario** usuarios, int totalUsuarios, Alojamiento** alojamientos, int totalAlojamientos);
 };
 
 #endif // RESERVAS_H

@@ -65,6 +65,10 @@ float Alojamiento::getPrecioPorNoche() const {
     return precioPorNoche;
 }
 
+Usuario* Alojamiento::getAnfitrion() const {
+    return anfitrion;
+}
+
 bool Alojamiento::estaDisponible(const char* fechaInicio, int noches) const {
     for(int i = 0; i < noches; ++i){
         for(int j = 0; j < totalFechas; ++j){

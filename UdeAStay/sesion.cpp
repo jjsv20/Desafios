@@ -16,7 +16,7 @@ Sesion::~Sesion(){
 
 bool Sesion::iniciarSesion(const char* nombreUsuario, const char* documento, Usuario** usuarios, int totalUsuarios){
     for(int i = 0; i < totalUsuarios; ++i){
-        if(strcmp(usuarios[i]->getNombreUsuario(), nombreUsuario == 0) && strcmp(usuarios[i]->getDocumento(), documento) == 0){
+        if(strcmp(usuarios[i]->getNombreUsuario(), nombreUsuario) == 0 && strcmp(usuarios[i]->getDocumento(), documento) == 0){
             usuarioActivo = usuarios[i];
             return true;
         }
