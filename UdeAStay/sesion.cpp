@@ -2,42 +2,30 @@
 #include "usuario.h"
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <cstring>
 
 using namespace std;
 
 Sesion::Sesion(){
-    usuarioActivo = nullptr;
+    usuarioActivo = 0;
 }
 
 Sesion::~Sesion(){
-    delete usuarioActivo;
+    usuarioActivo = 0;
 }
 
-bool Sesion::iniciarSesion(const char* nombreUsuario, const char* documento){
-    if(usuarioActivo != nullptr){
-        cout << "Ya hay una sesión activa.\n";
-        return false;
+bool Sesion::iniciarSesion(const char* nombreUsuario, const char* documento, Usuario** usuarios, int totalUsuarios){
+    for(int i = 0; i < totalUsuarios; ++i){
+        if(strcmp(usuarios[i]->getNombreUsuario(), nombreUsuario == 0) && strcmp(usuarios[i]->getDocumento(), documento) == 0){
+            usuarioActivo = usuarios[i];
+            return true;
+        }
     }
-    Usuario* encontrado = cargarUsuarioDesdeArchivo(nombreUsuario, documento);
-    if(encontrado != nullptr){
-        usuarioActivo = encontrado;
-        return true;
-    }else {
-        cout << "Usuario o documento incorrectos." << endl;
-        return false;
-    }
+    return false;
 }
 
 void Sesion::cerrarSesion(){
-    if(usuarioActivo){
-        cout << "Sesión cerrada" << endl;
-        delete usuarioActivo;
-        usuarioActivo = nullptr;
-    }else{
-        cout << "No hay sesión activa." << endl;
-    }
+    usuarioActivo = 0;
 }
 
 Usuario* Sesion::getUsuarioActivo() const {

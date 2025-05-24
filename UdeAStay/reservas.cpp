@@ -77,7 +77,7 @@ void Reservas::cargarArchivoReservas(Usuario** usuarios, int totalUsuarios, Aloj
         string fechaPagoArchivo = linea.substr(p6 + 1, p7 - p6 - 1);
         string monto = linea.substr(p7 + 1, p8 - p7 - 1);
         string anotacionesArchivo = linea.substr(p8 + 1);
-        int nochesArchivo = atoi(noches.c_str());
+        int nochesArchivo = noches.empty() ? 0 : stoi(noches);
         float montoArchivo = atof(monto.c_str());
 
         Usuario* huesped = nullptr;

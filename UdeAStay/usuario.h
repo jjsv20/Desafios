@@ -13,16 +13,16 @@ public:
     Usuario(const char* nombreUsuario_, const char* documento_, char tipoRol_, int meses_, float puntuacion_);
     ~Usuario();
     const char* getNombreUsuario() const;
-    const char* getPassword() const;
     char getRol() const;
     const char* getDocumento() const;
     int getMesesAntiguedad() const;
     float getPuntuacion() const;
     bool esHuesped() const;
     bool esAnfitrion() const;
-};
 
-Usuario* cargarUsuarioDesdeArchivo(const char* usuario, const char* documento);
+    static void cargarArchivoUsuarios(Usuario**& usuarios, int& totalUsuarios);
+    static Usuario* buscarUsuario(const char* usuario, const char* documento, Usuario** usuarios, int totalUsuarios);
+};
 
 
 #endif // USUARIO_H

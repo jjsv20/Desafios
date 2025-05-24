@@ -1,6 +1,11 @@
 #include "alojamiento.h"
+#include "usuario.h"
 #include <iostream>
+#include <fstream>
+#include <string>
 #include <cstring>
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -25,8 +30,8 @@ Alojamiento::Alojamiento(const char* nombreAlojamiento_, const char* codigoAloja
         strcpy(amenidades[i], amenidades_[i]);
     }
     totalFechas = totalFechas_;
-    fechasReservadas = new char*[totalFechas];
-    for (int i = 0; i < totalFechas; ++i) {
+    fechasReservadas = new char*[totalFechas_];
+    for (int i = 0; i < totalFechas_; ++i) {
         fechasReservadas[i] = new char[strlen(fechasReservadas_[i]) + 1];
         strcpy(fechasReservadas[i], fechasReservadas_[i]);
     }
@@ -52,21 +57,144 @@ const char* Alojamiento::getCodigoAlojamiento() const {
     return codigoAlojamiento;
 }
 
-void Alojamiento::cargarArchivoAlojamientos(){
-
+const char* Alojamiento::getMunicipio() {
+    return municipio;
 }
 
-void Alojamiento::mostrarAlojamientos() const{
-    cout << "Nombre del alojamiento: " << nombreAlojamiento << endl;
-    cout << "Codigo: " << codigoAlojamiento << endl;
-    cout << "Ubicacion: " << municipio << ", " << departamento << endl;
-    cout << "Direccion: " << direccion << endl;
-    cout << "Tipo: " << tipo << endl;
-    cout << "Precio por noche: " << precioPorNoche << endl;
-    for(int i = 0; i < cantidadAmenidades; ++i){
-        cout << (amenidades[i] ? amenidades[i] : "N/A");
-        if(i < cantidadAmenidades - 1){
-            cout << ", ";
+float Alojamiento::getPrecioPorNoche() const {
+    return precioPorNoche;
+}
+
+bool Alojamiento::estaDisponible(const char* fechaInicio, int noches) const {
+    for(int i = 0; i < noches; ++i){
+        for(int j = 0; j < totalFechas; ++j){
+            if(strcmp(fechasReservadas[j], fechaInicio) == 0){
+                return false;
+            }
+            char f[11];
+            strcpy(f, fechaInicio);
+            int año, mes, dia;
+            sscanf(f, "%d-%d-%d", &año, &mes, &dia);
+            ++dia;
+            sprintf(f, "%04d-%02d-%02d", año, mes, dia);
+            fechaInicio = f;
         }
     }
+    return true;
+}
+
+void Alojamiento::cargarArchivoAlojamientos(Alojamiento**& alojamientos, int& totalAlojamientos, Usuario** usuarios, int totalUsuarios){
+    ifstream archivo("alojamientos.txt");
+    if (!archivo.is_open()) {
+        //cout << "Error al abrir el archivo de usuarios." << endl;
+        alojamientos = 0;
+        totalAlojamientos = 0;
+        return;
+    }
+    int capacidad = 10;
+    totalAlojamientos = 0;
+    alojamientos = new Alojamiento*[capacidad];
+    string linea;
+    while(getline(archivo, linea)){
+        if(linea.empty() || linea[0] == '#'){
+            continue;
+        }
+        size_t p1 = linea.find(',');
+        size_t p2 = linea.find(',', p1 + 1);
+        size_t p3 = linea.find(',', p2 + 1);
+        size_t p4 = linea.find(',', p3 + 1);
+        size_t p5 = linea.find(',', p4 + 1);
+        size_t p6 = linea.find(',', p5 + 1);
+        size_t p7 = linea.find(',', p6 + 1);
+        size_t p8 = linea.find(',', p7 + 1);
+        size_t p9 = linea.find(',', p8 + 1);
+        string nombreAlojamiento = linea.substr(0, p1);
+        string codigoAlojamiento = linea.substr(p1 + 1, p2 - p1 - 1);
+        string nombreAnfitrion = linea.substr(p2 + 1, p3 - p2 - 1);
+        string departamento = linea.substr(p3 + 1, p4 - p3 - 1);
+        string municipio = linea.substr(p4 + 1, p5 - p4 - 1);
+        char tipo = linea[p5 + 1];
+        string direccion = linea.substr(p6 + 1, p7 - p6 - 1);
+        float precio = stof(linea.substr(p7 + 1, p8 - p7 - 1));
+        string amenidadesAloja = linea.substr(p8 + 1, p9 - p8 - 1);
+        string fechasAloja = linea.substr(p9 + 1);
+        Usuario* anfitrion = 0;
+        for (int i = 0; i < totalUsuarios; ++i){
+            if (strcmp(usuarios[i]->getNombreUsuario(), nombreAnfitrion) == 0){
+                anfitrion = usuarios[i];
+            }
+        }
+
+        int cantAmenidades = 0;
+        char** amenidades = nullptr;
+        {
+            int count = 1;
+            for(char c : amenidadesAloja){
+                if(c == '.'){
+                    count++;
+                }
+            }
+            cantAmenidades = count;
+            amenidades = new char*[cantAmenidades];
+            int idx = 0;
+            size_t pos = 0;
+            while((pos = amenidadesAloja.find('.')) != string::npos){
+                string temp = amenidadesAloja.substr(0, pos);
+                amenidades[idx] = new char[temp.size() + 1];
+                strcpy(amenidades[idx], temp.c_str());
+                amenidadesAloja.erase(0, pos + 1);
+                idx++;
+            }
+            amenidades[idx] = new char[amenidadesAloja.size() + 1];
+            strcpy(amenidades[idx], amenidadesAloja.c_str());
+        }
+
+        int cantFechas = 1;
+        char** fechas = nullptr;
+        {
+            int count = 1;
+            for(char c : fechasAloja){
+                if(c == '.'){
+                    count++;
+                }
+            }
+            cantFechas = count;
+            fechas = new char*[cantFechas];
+            int jdx = 0;
+            size_t pos = 0;
+            while((pos = fechasAloja.find('.')) != string::npos){
+                string temp = fechasAloja.substr(0, pos);
+                fechas[jdx] = new char[temp.size() + 1];
+                strcpy(fechas[jdx], temp.c_str());
+                fechasAloja.erase(0, pos + 1);
+                jdx++;
+            }
+            fechas[jdx] = new char[fechasAloja.size() + 1];
+            strcpy(fechas[jdx], fechasAloja.c_str());
+        }
+
+        if(totalAlojamientos >= capacidadInicial){
+            capacidadInicial *= 2;
+            Alojamiento** nuevo = new Alojamiento*[capacidadInicial];
+            for(int i = 0; i < totalAlojamientos; ++i){
+                nuevo[i] = alojamientos[i];
+            }
+            delete[] alojamientos;
+            alojamientos = nuevo;
+        }
+        alojamientos[totalAlojamientos++] = new Alojamiento(
+            nombreAlojamiento.c_str(), codigoAlojamiento.c_str(), anfitrion,
+            departamento.c_str(), municipio.c_str(), tipo,
+            direccion.c_str(), precioNoche, amenidades, cantAmenidades, fechas, cantFechas
+            );
+        for (int j = 0; j < cantAmenidades; ++j){
+            delete[] amenidades[j];
+        }
+        delete[] amenidades;
+        for (int j = 0; j < cantFechas; ++j){
+            delete[] fechas[j];
+        }
+        delete[] fechas;
+    }
+    archivo.close();
 }

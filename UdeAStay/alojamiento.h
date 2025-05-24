@@ -33,9 +33,9 @@ public:
     float getPrecioPorNoche() const;
     const char** getAmenidades();
 
-
-    bool estaDisponible(const char* fechaInicio, int noches);
-    void mostrarAlojamientos() const;
+    static void cargarArchivoAlojamientos(Alojamiento**& alojamientos, int& totalAlojamientos, Usuario** usuarios, int totalUsuarios);
+    bool estaDisponible(const char* fechaInicio, int noches) const;
+    //void mostrarAlojamientos() const;
 };
 
 #endif // ALOJAMIENTO_H

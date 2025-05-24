@@ -21,7 +21,6 @@ public:
     Reservacion* getlistaReservas(int idx) const;
 
     void cargarArchivoReservas(Usuario** usuarios, int totalUsuarios, Alojamiento** alojamientos, int totalAlojamientos);
-    //bool usuarioTieneReservas(const)
 };
 
 #endif // RESERVAS_H

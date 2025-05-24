@@ -4,10 +4,15 @@
 
 #include "sesion.h"
 #include "usuario.h"
+#include "reservas.h"
+#include "alojamiento.h"
+#include "manejoreservas.h"
 
 using namespace std;
 
-void menuHuesped(Usuario* usuario) {
+void reservarAlojamiento(Usuario* usuario, Alojamiento** alojamientos, int totalAlojamientos, Reservas& reservas);
+
+void menuHuesped(Usuario* usuario, Alojamiento** alojamientos, int totalAlojamientos, Reservas& reservas) {
     int opcionHuesped;
     do {
         cout << "\n--- Menú Huésped ---" << endl;
@@ -20,7 +25,7 @@ void menuHuesped(Usuario* usuario) {
 
         switch (opcionHuesped) {
         case 1:
-            cout << "Función para reservar alojamiento aún no implementada.\n";
+            reservarAlojamiento(usuario, alojamientos, totalAlojamientos, reservas);
             break;
         case 2:
             cout << "Función para anular reservación aún no implementada.\n";
@@ -38,7 +43,7 @@ void menuHuesped(Usuario* usuario) {
     } while (opcionHuesped != 4);
 }
 
-void menuAnfitrion(Usuario* usuario) {
+void menuAnfitrion(Usuario*) {
     int opcionAnfitrion;
     do {
         cout << "\n--- Menú Anfitrión ---" << endl;
@@ -70,6 +75,14 @@ void menuAnfitrion(Usuario* usuario) {
 }
 
 void menuPrincipal(Sesion& sesion){
+    Usuario** usuarios = nullptr;
+    int totalUsuarios = 0;
+    Usuario::cargarArchivoUsuarios(usuarios, totalUsuarios);
+    Alojamiento** alojamientos = nullptr;
+    int totalAlojamientos = 0;
+    Alojamiento::cargarArchivoAlojamientos(usuarios, totalUsuarios, alojamientos, totalAlojamientos);
+    Reservas reservas;
+    reservas.cargarArchivoReservas(usuarios, totalUsuarios, alojamientos, totalAlojamientos);
     int opcionPrincipal;
     do {
         cout << "\n -=-=-=-= UdeAStay -=-=-=-=" << endl;
@@ -87,7 +100,7 @@ void menuPrincipal(Sesion& sesion){
                 Usuario* usuario = sesion.getUsuarioActivo();
                 cout << "\nBienvenido, " << usuario->getNombreUsuario() << endl;
                 if(usuario->esHuesped()){
-                    menuHuesped(usuario);
+                    menuHuesped(usuario, alojamientos, totalAlojamientos, reservas);
                 }else if(usuario->esAnfitrion()){
                     menuAnfitrion(usuario);
                 }else{
@@ -99,6 +112,13 @@ void menuPrincipal(Sesion& sesion){
             }
         }
     }while(opcionPrincipal != 2);
+    for (int i = 0; i < totalAlojamientos; ++i)
+        delete alojamientos[i];
+    delete[] alojamientos;
+
+    for (int i = 0; i < totalUsuarios; ++i)
+        delete usuarios[i];
+    delete[] usuarios;
 }
 
 int main()

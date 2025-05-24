@@ -11,7 +11,7 @@ public:
     Sesion();
     ~Sesion();
 
-    bool iniciarSesion(const char* nombreUsuario, const char* documento);
+    bool iniciarSesion(const char* nombreUsuario, const char* documento, Usuario** usuarios, int totalUsuarios);
     void cerrarSesion();
     Usuario* getUsuarioActivo() const;
 };
