@@ -8,69 +8,6 @@ using namespace std;
 
 void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int totalAlojamientos, Reservacion**& reservas, int& totalReservas);
 
-/*/void menuHuesped(Usuario* usuario, Alojamiento** alojamientos, int totalAlojamientos, Reserva& reservas) {
-    int opcionHuesped;
-    do {
-        cout << "\n--- Menú Huésped ---" << endl;
-        cout << "1. Reservar alojamiento" << endl;
-        cout << "2. Anular reservación" << endl;
-        cout << "3. Mis reservaciones" << endl;
-        cout << "4. Cerrar sesión" << endl;
-        cout << "Seleccione una opción: ";
-        cin >> opcionHuesped;
-
-        switch (opcionHuesped) {
-        case 1:
-            reservarAlojamiento(usuario, alojamientos, totalAlojamientos, reservas);
-            break;
-        case 2:
-            cout << "Función para anular reservación aún no implementada.\n";
-            break;
-        case 3:
-            cout << "Función para ver reservaciones aún no implementada.\n";
-            break;
-        case 4:
-            cout << "Cerrando sesión...\n";
-            break;
-        default:
-            cout << "Opción inválida.\n";
-        }
-
-    } while (opcionHuesped != 4);
-}
-
-void menuAnfitrion(Usuario*) {
-    int opcionAnfitrion;
-    do {
-        cout << "\n--- Menú Anfitrión ---" << endl;
-        cout << "1. Consultar reservaciones" << endl;
-        cout << "2. Anular reservación" << endl;
-        cout << "3. Actualizar histórico" << endl;
-        cout << "4. Cerrar sesión" << endl;
-        cout << "Seleccione una opción: ";
-        cin >> opcionAnfitrion;
-
-        switch (opcionAnfitrion) {
-        case 1:
-            cout << "Función para consultar reservaciones aún no implementada.\n";
-            break;
-        case 2:
-            cout << "Función para anular reservación aún no implementada.\n";
-            break;
-        case 3:
-            cout << "Función para actualizar histórico aún no implementada.\n";
-            break;
-        case 4:
-            cout << "Cerrando sesión...\n";
-            break;
-        default:
-            cout << "Opción inválida.\n";
-        }
-
-    } while (opcionAnfitrion != 4);
-}/*/
-
-
 int main()
 {
     Usuario** usuarios = 0;
@@ -133,9 +70,38 @@ int main()
                 } while (opcionHuesped != 4);
             } else if (usuario->getRol() == 'A') {
                 cout << "Menú para anfitrión aún no implementado.\n";
-                sesion.cerrarSesion();
+                int opcionAnfitrion = 0;
+                do {
+                    cout << "\n--- Menú Anfitrión ---" << endl;
+                    cout << "1. Consultar reservaciones" << endl;
+                    cout << "2. Anular reservación" << endl;
+                    cout << "3. Actualizar histórico" << endl;
+                    cout << "4. Cerrar sesión" << endl;
+                    cout << "Seleccione una opción: ";
+                    cin >> opcionAnfitrion;
+                    switch (opcionAnfitrion) {
+                    case 1:
+                        cout << "Función para consultar reservaciones aún no implementada.\n";
+                        break;
+                    case 2:
+                        cout << "Función para anular reservación aún no implementada.\n";
+                        break;
+                    case 3:
+                        cout << "Función para actualizar histórico aún no implementada.\n";
+                        break;
+                    case 4:
+                        cout << "Cerrando sesión...\n";
+                        sesion.cerrarSesion();
+                        break;
+                    default:
+                        cout << "Opción inválida.\n";
+                    }
+
+                } while (opcionAnfitrion != 4);
             }
+        }else if(opcionPrincipal == 2){
             sesion.cerrarSesion();
+            break;
         }
     }
     for (int i = 0; i < totalAlojamientos; ++i)
@@ -145,6 +111,5 @@ int main()
     for (int i = 0; i < totalUsuarios; ++i)
         delete usuarios[i];
     delete[] usuarios;
-
     return 0;
 }

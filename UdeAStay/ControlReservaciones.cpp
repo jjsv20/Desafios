@@ -152,7 +152,7 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
             indices[alojamientosEncontrados] = i;
             alojamientosEncontrados++;
         }
-        if(alojamientosEncontrados == 00){
+        if(alojamientosEncontrados == 0){
             cout << "No se encontraron alojamientos para " << municipio << endl;
             delete[] indices;
             return;
