@@ -78,9 +78,9 @@ bool Alojamiento::estaDisponible(const char* fechaInicio, int noches) const {
             char f[11];
             strcpy(f, fechaInicio);
             int año, mes, dia;
-            sscanf(f, "%d-%d-%d", &año, &mes, &dia);
+            sscanf(f, "%d-%d-%d", &dia, &año, &mes);
             ++dia;
-            sprintf(f, "%04d-%02d-%02d", año, mes, dia);
+            sprintf(f, "%04d-%02d-%02d", dia, año, mes);
             fechaInicio = f;
         }
     }

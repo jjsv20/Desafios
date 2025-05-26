@@ -5,13 +5,13 @@
 
 using namespace std;
 
-Reservacion::Reservacion(const char* fechaEntrada_, int duracion_, const char* codigoReservacion_, Alojamiento* codigoAlojamiento_, Usuario* documentoHuesped_, const char* metodoDePago_, const char* fechadePago_, float monto_, const char* anotaciones_) {
+Reservacion::Reservacion(const char* fechaEntrada_, int duracion_, const char* codigoReservacion_, Alojamiento* alojamiento_, Usuario* documentoHuesped_, const char* metodoDePago_, const char* fechadePago_, float monto_, const char* anotaciones_) {
     fechaEntrada = new char[strlen(fechaEntrada_) + 1];
     strcpy(fechaEntrada, fechaEntrada_);
     duracion = duracion_;
     codigoReservacion = new char[strlen(codigoReservacion_) + 1];
     strcpy(codigoReservacion, codigoReservacion_);
-    codigoAlojamiento = codigoAlojamiento_;
+    alojamiento = alojamiento_;
     //strcpy(codigoAlojamiento, codigoAlojamiento_);
     documentoHuesped = documentoHuesped_;
     //strcpy(documentoHuesped, documentoHuesped_);
@@ -46,8 +46,8 @@ const char* Reservacion::getCodigoReservacion() const {
     return codigoReservacion;
 }
 
-Alojamiento* Reservacion::getCodigoAlojamiento() const {
-    return codigoAlojamiento;
+Alojamiento* Reservacion::getAlojamiento() const {
+    return alojamiento;
 }
 
 Usuario* Reservacion::getDocumentoHuesped() const {
@@ -136,7 +136,7 @@ void Reservacion::cargarReservas(Reservacion**& reservas, int& total, Usuario** 
                 fechaEntradaArchivo.c_str(), nochesArchivo, codigoReservaArchivo.c_str(),
                 alojamiento, huesped,
                 metodoPagoArchivo.c_str(), fechaPagoArchivo.c_str(), monto, anotacionesArchivo.c_str()
-                );
+            );
         }
     }
     archivo.close();
