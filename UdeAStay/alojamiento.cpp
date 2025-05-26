@@ -9,6 +9,8 @@
 
 using namespace std;
 
+void sumarDias(const char* fecha, int dias, char* resultado);
+
 Alojamiento::Alojamiento(const char* nombreAlojamiento_, const char* codigoAlojamiento_, Usuario* anfitrion_, const char* departamento_, const char* municipio_, char tipo_, const char* direccion_, float precioPorNoche_, char** amenidades_, int cantidaAmenidades_, char** fechasReservadas_, int totalFechas_) {
     nombreAlojamiento = new char[strlen(nombreAlojamiento_) + 1];
     strcpy(nombreAlojamiento, nombreAlojamiento_);
@@ -70,6 +72,20 @@ Usuario* Alojamiento::getAnfitrion() const {
 }
 
 bool Alojamiento::estaDisponible(const char* fechaInicio, int noches) const {
+    char fechaActual[12];
+    for(int i = 0; i < noches; ++i){
+        sumarDias(fechaInicio, i, fechaActual);
+        for(int j = 0; j < totalFechas; ++j){
+            if(strcmp(fechasReservadas[j], fechaActual) == 0){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+
+/*/bool Alojamiento::estaDisponible(const char* fechaInicio, int noches) const {
     for(int i = 0; i < noches; ++i){
         for(int j = 0; j < totalFechas; ++j){
             if(strcmp(fechasReservadas[j], fechaInicio) == 0){
@@ -77,15 +93,15 @@ bool Alojamiento::estaDisponible(const char* fechaInicio, int noches) const {
             }
             char f[11];
             strcpy(f, fechaInicio);
-            int año, mes, dia;
-            sscanf(f, "%d-%d-%d", &dia, &año, &mes);
+            int dia, mes, anio;
+            sscanf(f, "%d-%d-%d", &dia, &mes, &anio);
             ++dia;
-            sprintf(f, "%04d-%02d-%02d", dia, año, mes);
+            sprintf(f, "%02d-%02d-%04d", dia, mes, anio);
             fechaInicio = f;
         }
     }
     return true;
-}
+}/*/
 
 void Alojamiento::cargarArchivoAlojamientos(Alojamiento**& alojamientos, int& totalAlojamientos, Usuario** usuarios, int totalUsuarios){
     ifstream archivo("alojamientos.txt");

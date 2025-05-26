@@ -136,7 +136,7 @@ void Reservacion::cargarReservas(Reservacion**& reservas, int& total, Usuario** 
                 fechaEntradaArchivo.c_str(), nochesArchivo, codigoReservaArchivo.c_str(),
                 alojamiento, huesped,
                 metodoPagoArchivo.c_str(), fechaPagoArchivo.c_str(), monto, anotacionesArchivo.c_str()
-            );
+                );
         }
     }
     archivo.close();

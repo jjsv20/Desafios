@@ -8,56 +8,61 @@
 
 using namespace std;
 
-bool esBisiesto(int año){
-    return(año % 4 == 0 && año % 100 != 0) || (año % 400 == 0);
+bool esBisiesto(int anio){
+    return(anio % 4 == 0 && anio % 100 != 0) || (anio % 400 == 0);
 }
 
-int diasDelMes(int mes, int año){
+int diasDelMes(int mes, int anio){
     switch(mes){
     case 2:
-        return esBisiesto(año) ? 29 : 28;
+        return esBisiesto(anio) ? 29 : 28;
     case 4: case 6: case 9: case 11:
         return 30;
     default: return 31;
     }
 }
 
-void fechaADigito(const char* fecha, int& dia, int& mes, int& año){
-    sscanf(fecha, "%d-%d-%d", &dia, &mes, &año);
-    if(año < 100){
-        año += 2000;
+void fechaADigito(const char* fecha, int& dia, int& mes, int& anio){
+    sscanf(fecha, "%d-%d-%d", &dia, &mes, &anio);
+    if(anio < 100){
+        anio += 2000;
     }
 }
 
 void sumarDias(const char* fecha, int dias, char* resultado){
-    int dia, mes, año;
-    fechaADigito(fecha, dia, mes, año);
+    int dia, mes, anio;
+    fechaADigito(fecha, dia, mes, anio);
     dia += dias;
     while(true){
-        int diasMes = diasDelMes(mes, año);
+        int diasMes = diasDelMes(mes, anio);
         if(dia <= diasMes){
             break;
         }
         dia -= diasMes;
         mes++;
         if(mes > 12){
-            mes += 1;
-            año++;
+            mes = 1;
+            anio++;
         }
     }
-    sprintf(resultado, "%02d-%02d-%02d", dia, mes, año);
+    sprintf(resultado, "%02d-%02d-%04d", dia, mes, anio);
 }
 
-const char* nombreDia(int dia, int mes, int año){
+int diaDeLaSemana(int dia, int mes, int anio){
     if(mes < 3){
         mes += 12;
-        año--;
+        anio--;
     }
-    int a = año % 100;
-    int a_ = año /10;
-    int d = (dia + 13*(mes + 1)/5 + a + a/4 + a_/4 + 5*a_) % 7;
-    const char*dias[] = {"Sábado", "Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes"};
-    return dias[d];
+    int K = anio % 100;
+    int J = anio / 100;
+    int h = (dia + 13*(mes + 1)/5 + K + K/4 + J/4 + 5*J) % 7;
+    return h;
+}
+
+const char* nombreDia(int dia, int mes, int anio){
+    const char* dias[] = {"Sábado", "Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes"};
+    int idx = diaDeLaSemana(dia, mes, anio);
+    return dias[idx];
 }
 
 const char* nombreMes(int mes){
@@ -66,10 +71,11 @@ const char* nombreMes(int mes){
 }
 
 void fechaATexto(const char* fecha){
-    int dia, mes, año;
-    fechaADigito(fecha, dia, mes, año);
-    printf("%s, %d de %s del %d", nombreDia(dia, mes, año), dia, nombreMes(mes), año);
+    int dia, mes, anio;
+    fechaADigito(fecha, dia, mes, anio);
+    printf("%s, %d de %s del %d", nombreDia(dia, mes, anio), dia, nombreMes(mes), anio);
 }
+
 
 bool AlojamientoReservadoEnFechas(const char* codigoAlojamiento, const char* fechaInicio, int noches, Reservacion** reservas, int totalReservas) {
     char fechaReserva[12];
@@ -265,6 +271,7 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
             ofstream archivo("reservas.txt", ios::app);
             if(archivo.is_open()){
                 archivo << fechaInicio << ","
+                        << noches << ","
                         << codReserva << ","
                         << alojamientos[idxAlojamiento]->getCodigoAlojamiento() << ","
                         << huesped->getNombreUsuario() << ","
