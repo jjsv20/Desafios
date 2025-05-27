@@ -272,7 +272,7 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
             if(archivo.is_open()){
                 archivo << fechaInicio << ","
                         << noches << ","
-                        << codReserva << ","
+                        << codReserva + 1 << ","
                         << alojamientos[idxAlojamiento]->getCodigoAlojamiento() << ","
                         << huesped->getNombreUsuario() << ","
                         << metodoPago << ","

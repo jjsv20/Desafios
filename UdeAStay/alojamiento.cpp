@@ -75,8 +75,13 @@ bool Alojamiento::estaDisponible(const char* fechaInicio, int noches) const {
     char fechaActual[12];
     for(int i = 0; i < noches; ++i){
         sumarDias(fechaInicio, i, fechaActual);
-        for(int j = 0; j < totalFechas; ++j){
-            if(strcmp(fechasReservadas[j], fechaActual) == 0){
+        for(int j = 0; j < totalFechas; j += 2){
+            if(j + 1 >= totalFechas){
+                break;
+            }
+            const char* inicio = fechasReservadas[j];
+            const char* fin = fechasReservadas[j + 1];
+            if(strcmp(fechaActual, inicio) >= 0 && strcmp(fechaActual, fin) <= 0){
                 return false;
             }
         }
@@ -84,20 +89,14 @@ bool Alojamiento::estaDisponible(const char* fechaInicio, int noches) const {
     return true;
 }
 
-
 /*/bool Alojamiento::estaDisponible(const char* fechaInicio, int noches) const {
+    char fechaActual[12];
     for(int i = 0; i < noches; ++i){
+        sumarDias(fechaInicio, i, fechaActual);
         for(int j = 0; j < totalFechas; ++j){
-            if(strcmp(fechasReservadas[j], fechaInicio) == 0){
+            if(strcmp(fechasReservadas[j], fechaActual) == 0){
                 return false;
             }
-            char f[11];
-            strcpy(f, fechaInicio);
-            int dia, mes, anio;
-            sscanf(f, "%d-%d-%d", &dia, &mes, &anio);
-            ++dia;
-            sprintf(f, "%02d-%02d-%04d", dia, mes, anio);
-            fechaInicio = f;
         }
     }
     return true;
