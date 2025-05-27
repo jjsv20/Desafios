@@ -30,8 +30,9 @@ public:
     const char* getMunicipio();
     char getTipo() const;
     const char* getDireccion();
+    char** getAmenidades();
+    int getCantidadAmenidades() const;
     float getPrecioPorNoche() const;
-    const char** getAmenidades();
 
     static void cargarArchivoAlojamientos(Alojamiento**& alojamientos, int& totalAlojamientos, Usuario** usuarios, int totalUsuarios);
     bool estaDisponible(const char* fechaInicio, int noches) const;

@@ -71,6 +71,15 @@ Usuario* Alojamiento::getAnfitrion() const {
     return anfitrion;
 }
 
+char** Alojamiento::getAmenidades() {
+    return amenidades;
+}
+
+int Alojamiento::getCantidadAmenidades() const {
+    return cantidadAmenidades;
+}
+
+
 bool Alojamiento::estaDisponible(const char* fechaInicio, int noches) const {
     char fechaActual[12];
     for(int i = 0; i < noches; ++i){
@@ -88,19 +97,6 @@ bool Alojamiento::estaDisponible(const char* fechaInicio, int noches) const {
     }
     return true;
 }
-
-/*/bool Alojamiento::estaDisponible(const char* fechaInicio, int noches) const {
-    char fechaActual[12];
-    for(int i = 0; i < noches; ++i){
-        sumarDias(fechaInicio, i, fechaActual);
-        for(int j = 0; j < totalFechas; ++j){
-            if(strcmp(fechasReservadas[j], fechaActual) == 0){
-                return false;
-            }
-        }
-    }
-    return true;
-}/*/
 
 void Alojamiento::cargarArchivoAlojamientos(Alojamiento**& alojamientos, int& totalAlojamientos, Usuario** usuarios, int totalUsuarios){
     ifstream archivo("alojamientos.txt");
@@ -207,14 +203,15 @@ void Alojamiento::cargarArchivoAlojamientos(Alojamiento**& alojamientos, int& to
             departamento.c_str(), municipio.c_str(), tipo,
             direccion.c_str(), precioNoche, amenidades, cantAmenidades, fechas, cantFechas
             );
-        for (int j = 0; j < cantAmenidades; ++j){
+        /*/for (int j = 0; j < cantAmenidades; ++j){
             delete[] amenidades[j];
-        }
+        }/*/
         delete[] amenidades;
         for (int j = 0; j < cantFechas; ++j){
             delete[] fechas[j];
         }
-        delete[] fechas;
+        //delete[] fechas;
+
     }
     archivo.close();
 }
