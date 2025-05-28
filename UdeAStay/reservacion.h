@@ -30,9 +30,7 @@ public:
     float getMonto() const;
     const char* getAnotaciones() const;
 
-    //void mostrarReservacion() const;
     static void cargarReservas(Reservacion**& reservas, int& total, Usuario** usuarios, int totalUsuarios, Alojamiento** alojamientos, int totalAlojamientos);
-    void mostrar() const;
 };
 
 #endif // RESERVACION_H

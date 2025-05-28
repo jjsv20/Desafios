@@ -7,8 +7,8 @@
 using namespace std;
 
 void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int totalAlojamientos, Reservacion**& reservas, int& totalReservas);
-//void mostrarReservas(Reservacion** reservas, int totalReservas);
-void mostrar();
+void anularReservas(Usuario* usuario, Reservacion**& reservas, int& totalReservas);
+
 int main()
 {
     Usuario** usuarios = 0;
@@ -56,8 +56,7 @@ int main()
                         reservarAlojamiento(usuario, alojamientos, totalAlojamientos, reservas, totalReservas);
                         break;
                     case 2:
-                        //mostrarReservas(reservas, totalReservas);
-                        mostrar();
+                        anularReservas(usuario, reservas, totalReservas);
                         break;
                     case 3:
                         cout << "Cerrando sesión...\n";

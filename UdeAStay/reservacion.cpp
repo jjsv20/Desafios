@@ -111,7 +111,7 @@ void Reservacion::cargarReservas(Reservacion**& reservas, int& total, Usuario** 
         // Buscar el huésped
         Usuario* huesped = nullptr;
         for(int i = 0; i < totalUsuarios; ++i){
-            if(strcmp(usuarios[i]->getDocumento(), docHuespedArchivo.c_str()) == 0 && usuarios[i]->esHuesped()){
+            if(strcmp(usuarios[i]->getNombreUsuario(), docHuespedArchivo.c_str()) == 0 && usuarios[i]->esHuesped()){
                 huesped = usuarios[i];
                 break;
             }

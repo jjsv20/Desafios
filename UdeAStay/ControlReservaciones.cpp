@@ -1,6 +1,7 @@
 #include "usuario.h"
 #include "alojamiento.h"
 #include "reservacion.h"
+#include "sesion.h"
 #include <cstring>
 #include <fstream>
 #include <cstdio>
@@ -155,6 +156,28 @@ void agregarRangoFechaAlojamiento(const char* codigoAlojamiento, const char* fec
     cout << "exito";
 }
 
+void eliminarRangoFechaAlojamiento(const char* codigoAlojamiento, const char* fechaInicio, const char* fechaFin){
+    ifstream archivo("alojamientos.txt");
+    ofstream temporal("alojamientosTemp.txt");
+    string linea;
+    string codigoA(codigoAlojamiento);
+    string rangoAEliminar = "," + string(fechaInicio) + "." + string(fechaFin);
+    while(getline(archivo, linea)){
+        if(linea.find(codigoA) != string::npos){
+            size_t pos = linea.find(rangoAEliminar);
+            if(pos != string::npos){
+                linea.erase(pos, rangoAEliminar.length());
+            }
+        }
+        temporal << linea << "\n";
+    }
+    archivo.close();
+    temporal.close();
+    remove("alojamientos.txt");
+    rename("alojamientosTemp.txt", "alojamientos.txt");
+    cout << "exito";
+}
+
 void CodigoReservacion(char* codigoGenerado){
     ifstream archivo("reservas.txt");
     string linea;
@@ -202,7 +225,7 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
         float precioMin = 0.0, precioMax = 0.0, puntuacionMinima = 0.0;
         cout << "\nIngrese municipio: ";
         cin >> municipio;
-        cout << "Fecha de inicio (ej, 2025-02-22: ";
+        cout << "Fecha de inicio (ej, 28-05-2025): ";
         cin >> fechaInicio;
         cout << "Cantidad de noches: ";
         cin >> noches;
@@ -347,7 +370,7 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
                         << monto << ","
                         << anotaciones << endl;
                 archivo.close();
-                cout << "¡Reserva confirmada exitosamente\n";
+                cout << "\nReserva confirmada exitosamente\n";
             }
         }else{
             cout << "\nReserva cancelada\n";
@@ -398,7 +421,7 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
         } else if(strcmp(opcionPago2, "2") == 0){
             strcpy(metodoPago2, "Tarjeta de credito");
         } else {
-            cout << "Método de pago no válido.\n";
+            cout << "\nMétodo de pago no válido.\n";
             return;
         }
         cout << "Fecha de pago (ej: 13-06-2025): ";
@@ -448,7 +471,7 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
                         << monto << ","
                         << anotaciones << endl;
                 archivo.close();
-                cout << "¡Reserva confirmada y guardada en reservas.txt!\n";
+                cout << "\nReserva confirmada exitosamente\n";
             }
         }else{
             cout << "\nRserva cancelada\n";
@@ -460,54 +483,99 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
     }
 }
 
-/*/void mostrarRservasHuesped(Usuario* huesped, Reservacion** reservas, int totalReservas, int*& indicesReservasUsuario, int& cantidadRerservasUsuario){
-    cantidadRerservasUsuario = 0;
-    indicesReservasUsuario = new int[totalReservas];
-    for(int  i = 0; i < totalReservas; ++i){
-        Reservacion* R = reservas[i];
-    }
-    if(cantidadRerservasUsuario == 0){
-        cout << "\nActualmente te encuntras sin reserevaciones\n";
-        return;
-    }
-    cout << "Tus reservaciones, " << huesped->getNombreUsuario() << endl;
-    for(int j = 0; j < cantidadRerservasUsuario; ++j){
-        int i = indicesReservasUsuario[j];
-        Reservacion* R = reservas[i];
-        char fechaFin[12];
-        sumarDias(R->getFechaEntrada(), R->getDuracion() - 1, fechaFin);
-        cout << (j + 1) << ". Codigo: " << R->getCodigoReservacion()
-             << ", Alojamiento: " << R->getAlojamiento()->getCodigoAlojamiento()
-             << ", Fecha de entrada: ";
-        fechaATexto(R->getFechaEntrada());
-        cout << ", Fecha de salida: ";
-        fechaATexto(fechaFin);
-        cout << ", Noches: " << R->getDuracion() << endl;
-    }
-}/*/
-
-
-void mostrarReservas(Reservacion** reservas, int totalReservas) {
+void anularReservas(Usuario* usuario, Reservacion**& reservas, int& totalReservas) {
     if (totalReservas == 0) {
         cout << "\nNo hay reservas registradas.\n";
         return;
     }
-
-    cout << "\n--- Lista de Reservas ---\n";
+    int contador = 0;
     for (int i = 0; i < totalReservas; ++i) {
-        Reservacion* r = reservas[i];
-        cout << "Reserva #" << (i + 1) << endl;
-        cout << "Código de reserva: " << r->getCodigoReservacion() << endl;
-        cout << "Documento huésped: " << r->getDocumentoHuesped()->getDocumento() << endl;
-        cout << "Alojamiento: " << r->getAlojamiento()->getCodigoAlojamiento() << endl;
-        cout << "Fecha de entrada: ";
-        fechaATexto(r->getFechaEntrada());
-        cout << endl;
-        cout << "Duración: " << r->getDuracion() << " noche(s)" << endl;
-        cout << "-----------------------------\n";
+        Usuario* usuarioReserva = reservas[i]->getDocumentoHuesped();
+        if (usuarioReserva && strcmp(usuarioReserva->getNombreUsuario(), usuario->getNombreUsuario()) == 0) {
+            char fechaFin[12];
+            sumarDias(reservas[i]->getFechaEntrada(), reservas[i]->getDuracion() - 1, fechaFin);
+            cout << "Reserva #" << (contador + 1) << endl;
+            cout << "  Codigo: " << reservas[i]->getCodigoReservacion() << endl;
+            cout << "  Alojamiento: " << reservas[i]->getAlojamiento()->getCodigoAlojamiento() << endl;
+            cout << "  Fecha de entrada: ";
+            fechaATexto(reservas[i]->getFechaEntrada());
+            cout << endl;
+            cout << "  Fecha de salida: ";
+            fechaATexto(fechaFin);
+            cout << endl;
+            cout << "  Cantidad de noches: " << reservas[i]->getDuracion() << endl;
+            cout << "  Metodo de pago: " << reservas[i]->getMetodoDePago() << endl;
+            cout << "  Fecha de pago: " << reservas[i]->getFechaDePago() << endl;
+            cout << "  Monto: " << reservas[i]->getMonto() << endl;
+            cout << "  Anotaciones: " << reservas[i]->getAnotaciones() << endl;
+            cout << "-----------------------------\n";
+            ++contador;
+        }
+    }
+    if (contador == 0) {
+        cout << "\nActualmente te encuntras sin reserevaciones\n";
+        return;
+    }
+    char codigoAEliminar[15];
+    cout << "\nSeleccione el codigo de la reserva a eliminar (ejemplo: RS001): ";
+    cin >> codigoAEliminar;
+
+    int idxCodigo = -1;
+    for(int i = 0; i < totalReservas; ++i){
+        Usuario* reservasUsuario = reservas[i]->getDocumentoHuesped();
+        if(reservasUsuario && strcmp(reservasUsuario->getNombreUsuario(), usuario->getNombreUsuario()) == 0 && strcmp(reservas[i]->getCodigoReservacion(), codigoAEliminar) == 0){
+            idxCodigo = i;
+            break;
+        }
+    }
+    if (idxCodigo == -1) {
+        cout << "No se encontró una reserva con ese código.\n";
+        return;
+    }
+    char confirmarEliminacion[6];
+    cout << "\nEsta seguro de eliminar la reservacion " << codigoAEliminar << "? (si o no): ";
+    cin >> confirmarEliminacion;
+    if(strcmp(confirmarEliminacion, "si") == 0 || strcmp(confirmarEliminacion, "SI") == 0){
+        const char* codigoAlojamiento = reservas[idxCodigo]->getAlojamiento()->getCodigoAlojamiento();
+        const char* fechaInicio      = reservas[idxCodigo]->getFechaEntrada();
+        int noches                  = reservas[idxCodigo]->getDuracion();
+        char fechaFin[12];
+        sumarDias(fechaInicio, noches - 1, fechaFin);
+        eliminarRangoFechaAlojamiento(codigoAlojamiento, fechaInicio, fechaFin);
+        Reservacion* reservaEliminada = reservas[idxCodigo];
+        Reservacion** tmp = new Reservacion*[totalReservas - 1];
+        int idxTmp = 0;
+        for (int i = 0; i < totalReservas; ++i) {
+            if (i != idxCodigo) {
+                tmp[idxTmp++] = reservas[i];
+            }
+        }
+        delete reservaEliminada;
+        delete[] reservas;
+        reservas = tmp;
+        --totalReservas;
+        ifstream archivo("reservas.txt");
+        ofstream temporal("reserva_temp.txt");
+        string linea;
+        while (getline(archivo, linea)) {
+            if (linea.empty() || linea[0] == '#'){
+                temporal << linea << "\n";
+                continue;
+            }
+            size_t pos1 = linea.find(',');
+            size_t pos2 = linea.find(',', pos1 + 1);
+            size_t pos3 = linea.find(',', pos2 + 1);
+            string codArchivo = linea.substr(pos2 + 1, pos3 - pos2 - 1);
+            if (codArchivo != codigoAEliminar) {
+                temporal << linea << "\n";
+            }
+        }
+        archivo.close();
+        temporal.close();
+        remove("reservas.txt");
+        rename("reserva_temp.txt", "reservas.txt");
+        cout << "\nReserva elimina exitosamente";
+    }else{
+        cout << "\nEliminacion cancelada";
     }
 }
-
-
-
-//void anularReservacion();
