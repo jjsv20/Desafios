@@ -7,7 +7,8 @@
 using namespace std;
 
 void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int totalAlojamientos, Reservacion**& reservas, int& totalReservas);
-
+//void mostrarReservas(Reservacion** reservas, int totalReservas);
+void mostrar();
 int main()
 {
     Usuario** usuarios = 0;
@@ -47,8 +48,7 @@ int main()
                     cout << "\n--- Menú Huésped ---" << endl;
                     cout << "1. Reservar alojamiento" << endl;
                     cout << "2. Anular reservación" << endl;
-                    cout << "3. Mis reservaciones" << endl;
-                    cout << "4. Cerrar sesión" << endl;
+                    cout << "3. Cerrar sesión" << endl;
                     cout << "Seleccione una opción: ";
                     cin >> opcionHuesped;
                     switch (opcionHuesped) {
@@ -56,18 +56,16 @@ int main()
                         reservarAlojamiento(usuario, alojamientos, totalAlojamientos, reservas, totalReservas);
                         break;
                     case 2:
-                        cout << "Funcionalidad no implementada aún.\n";
+                        //mostrarReservas(reservas, totalReservas);
+                        mostrar();
                         break;
                     case 3:
-                        //mostrarReservasHuesped(usuario->getDocumento(), reservas, totalReservas);
-                        break;
-                    case 4:
                         cout << "Cerrando sesión...\n";
                         break;
                     default:
                         cout << "Opción inválida.\n";
                     }
-                } while (opcionHuesped != 4);
+                } while (opcionHuesped != 3);
             } else if (usuario->getRol() == 'A') {
                 cout << "Menú para anfitrión aún no implementado.\n";
                 int opcionAnfitrion = 0;
@@ -96,7 +94,6 @@ int main()
                     default:
                         cout << "Opción inválida.\n";
                     }
-
                 } while (opcionAnfitrion != 4);
             }
         }else if(opcionPrincipal == 2){
