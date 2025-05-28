@@ -323,9 +323,6 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
         }
         cout << "Fecha de pago (ej: 13-06-2025): ";
         cin >> fechaPago;
-        cout << "Monto: ";
-        cin >> monto;
-        cin.ignore();
         cout << "Anotaciones: ";
         cin.getline(anotaciones,1000);
 
@@ -352,6 +349,7 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
         cout << endl;
         cout << "Fecha de salida: "; fechaATexto(fechaFin);
         cout << endl;
+        cout << "Monto: $" << monto << " COP, por " << noches << " noches";
         cout << "\n---------------------------------------";
         char confirmarReserva[4];
         cout << "\n¿Desea confirmar la reservación? (si o no): ";
@@ -426,8 +424,6 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
         }
         cout << "Fecha de pago (ej: 13-06-2025): ";
         cin >> fechaPago;
-        cout << "Monto: ";
-        cin >> monto;
         cin.ignore();
         cout << "Anotaciones: ";
         cin.getline(anotaciones,1000);
@@ -446,13 +442,14 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
         sumarDias(fechaInicio, noches - 1, fechaFin);
         cout << "\n---------------------------------------\n";
         cout << "\nComprobante de Reservacion: " << endl;
-        cout << "Codigo: " << codReserva << endl;
+        cout << "Codigo: " << codReserva;
         cout << "Usuario: " << huesped->getNombreUsuario();
         cout << "Alojamiento: " << alojamientos[idxAlojamiento]->getCodigoAlojamiento() << endl;
         cout << "Fecha de entrada: "; fechaATexto(fechaInicio);
         cout << endl;
         cout << "Fecha de salida: "; fechaATexto(fechaFin);
         cout << endl;
+        cout << "Monto: $" << monto << " COP, por " << noches << " noches";
         cout << "\n---------------------------------------";
         char confirmarReserva[4];
         cout << "\nDesea confirmar la reservacion? (si o no): ";
