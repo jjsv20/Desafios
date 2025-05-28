@@ -36,7 +36,6 @@ public:
 
     static void cargarArchivoAlojamientos(Alojamiento**& alojamientos, int& totalAlojamientos, Usuario** usuarios, int totalUsuarios);
     bool estaDisponible(const char* fechaInicio, int noches) const;
-    //void mostrarAlojamientos() const;
 };
 
 #endif // ALOJAMIENTO_H

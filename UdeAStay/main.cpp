@@ -2,6 +2,7 @@
 #include "alojamiento.h"
 #include "reservacion.h"
 #include "sesion.h"
+#include "medicionmemoria.h"
 #include <iostream>
 
 using namespace std;
@@ -54,9 +55,11 @@ int main()
                     switch (opcionHuesped) {
                     case 1:
                         reservarAlojamiento(usuario, alojamientos, totalAlojamientos, reservas, totalReservas);
+                        mostrarConsumoDeRecursos();
                         break;
                     case 2:
                         anularReservas(usuario, reservas, totalReservas);
+                        mostrarConsumoDeRecursos();
                         break;
                     case 3:
                         cout << "Cerrando sesión...\n";
@@ -107,5 +110,6 @@ int main()
     for (int i = 0; i < totalUsuarios; ++i)
         delete usuarios[i];
     delete[] usuarios;
+    mostrarConsumoDeRecursos();
     return 0;
 }

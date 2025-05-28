@@ -1,5 +1,6 @@
 #include "alojamiento.h"
 #include "usuario.h"
+#include "medicionmemoria.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -83,6 +84,7 @@ int Alojamiento::getCantidadAmenidades() const {
 bool Alojamiento::estaDisponible(const char* fechaInicio, int noches) const {
     char fechaActual[12];
     for(int i = 0; i < noches; ++i){
+        ++iteraciones;
         sumarDias(fechaInicio, i, fechaActual);
         for(int j = 0; j < totalFechas; j += 2){
             if(j + 1 >= totalFechas){
@@ -111,6 +113,7 @@ void Alojamiento::cargarArchivoAlojamientos(Alojamiento**& alojamientos, int& to
     alojamientos = new Alojamiento*[capacidad];
     string linea;
     while(getline(archivo, linea)){
+        ++iteraciones;
         if(linea.empty() || linea[0] == '#'){
             continue;
         }

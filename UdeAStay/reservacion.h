@@ -22,7 +22,6 @@ public:
     const char* getFechaEntrada() const;
     int getDuracion() const;
     const char* getCodigoReservacion() const;
-    //Alojamiento* alojamiento_;
     Alojamiento* getAlojamiento() const;
     Usuario* getDocumentoHuesped() const;
     const char* getMetodoDePago() const;

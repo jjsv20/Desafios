@@ -2,6 +2,7 @@
 #include "alojamiento.h"
 #include "reservacion.h"
 #include "sesion.h"
+#include "medicionmemoria.h"
 #include <cstring>
 #include <fstream>
 #include <cstdio>
@@ -9,7 +10,6 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-
 
 using namespace std;
 
@@ -86,12 +86,15 @@ bool AlojamientoReservadoEnFechas(const char* codigoAlojamiento, const char* fec
     char fechaReserva[12];
     strcpy(fechaReserva, fechaInicio);
     for(int i = 0; i < noches; ++i){
+        ++iteraciones;
         for(int j = 0; j < totalReservas; ++j){
+            ++iteraciones;
             if(strcmp(reservas[j]->getAlojamiento()->getCodigoAlojamiento(), codigoAlojamiento) == 0){
                 int nochesExistentes = reservas[j]->getDuracion();
                 char fechaExistente[12];
                 strcpy(fechaExistente, reservas[j]->getFechaEntrada());
                 for(int k = 0; k < nochesExistentes; ++k){
+                    ++iteraciones;
                     if(strcmp(fechaExistente, fechaReserva) == 0){
                         return true; // Ya está reservado
                     }
@@ -112,13 +115,16 @@ bool UsuarioConReservaEnFechas(Usuario* documentoHuesped, const char* fechaInici
     char fechaReserva[12];
     strcpy(fechaReserva, fechaInicio);
     for(int i = 0; i < noches; ++i){
+        ++iteraciones;
         for(int j = 0; j < totalReservas; ++j){
+            ++iteraciones;
             Usuario* usuarioReserva = reservas[j]->getDocumentoHuesped();
             if(usuarioReserva && strcmp(usuarioReserva->getDocumento(), documentoHuesped->getDocumento()) == 0){
                 int nocheExistente = reservas[j]->getDuracion();
                 char FechaExistente[12];
                 strcpy(FechaExistente, reservas[j]->getFechaEntrada());
                 for(int k = 0; k < nocheExistente; ++k){
+                    ++iteraciones;
                     if(strcmp(FechaExistente, fechaReserva) == 0){
                         return true;
                     }
@@ -144,6 +150,7 @@ void agregarRangoFechaAlojamiento(const char* codigoAlojamiento, const char* fec
     string fechaFinA(fechaFin);
 
     while(getline(archivo, linea)){
+        ++iteraciones;
         if(linea.find(codigoA) != string::npos){
             linea += "," + fechaIniA + "." + fechaFinA;
         }
@@ -163,6 +170,7 @@ void eliminarRangoFechaAlojamiento(const char* codigoAlojamiento, const char* fe
     string codigoA(codigoAlojamiento);
     string rangoAEliminar = "," + string(fechaInicio) + "." + string(fechaFin);
     while(getline(archivo, linea)){
+        ++iteraciones;
         if(linea.find(codigoA) != string::npos){
             size_t pos = linea.find(rangoAEliminar);
             if(pos != string::npos){
@@ -183,11 +191,13 @@ void CodigoReservacion(char* codigoGenerado){
     string linea;
     int maximoCodigoReservacion = -1;
     while(getline(archivo, linea)){
+        ++iteraciones;
         if (linea.empty() || linea[0] == '#') continue;
         stringstream ss(linea);
         string campos;
         int posicion = 0;
         while(getline(ss, campos, ',')){
+            ++iteraciones;
             posicion++;
             if(posicion == 3 && campos.rfind("RSV", 0   ) == 0){
                 int numero = stoi(campos.substr(3));
@@ -248,6 +258,7 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
         int* indices = new int[totalAlojamiento];
         int alojamientosEncontrados = 0;
         for(int i = 0; i < totalAlojamiento; ++i){
+            ++iteraciones;
             if(strcmp(alojamientos[i]->getMunicipio(), municipio) != 0){
                 continue;
             }
@@ -270,6 +281,7 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
         }
         cout << "\nAlojamientos disponibles en " << municipio << ": " << endl;
         for(int i  = 0; i < alojamientosEncontrados; ++i){
+            ++iteraciones;
             cout << (i+1) << ". Codigo: " << alojamientos[indices[i]]->getCodigoAlojamiento()
                 << ", Precio: " << alojamientos[indices[i]]->getPrecioPorNoche()
                 << ", Puntuacion anfitrion: " << alojamientos[indices[i]]->getAnfitrion()->getPuntuacion()
@@ -332,6 +344,7 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
         Reservacion** tmp = new Reservacion*[totalReservas + 1];
         tmp[totalReservas] = nuevaReservacion;
         for(int i  = 0; i < totalReservas; ++i){
+            ++iteraciones;
             tmp[i] = reservas[i];
         }
         tmp[totalReservas] = nuevaReservacion;
@@ -383,6 +396,7 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
         cout << "Cantidad de noches: ";
         cin >> noches;
         for(int i = 0; i < totalAlojamiento; ++i){
+            ++iteraciones;
             if(strcmp(alojamientos[i]->getCodigoAlojamiento(), codigoBuscado) == 0){
                 idxAlojamiento = i;
                 break;
@@ -432,6 +446,7 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
         Reservacion* nuevaReservacion = new Reservacion(fechaInicio, noches, codReserva, alojamientos[idxAlojamiento], huesped, metodoPago2, fechaPago, monto, anotaciones);
         Reservacion** tmp = new Reservacion*[totalReservas + 1];
         for(int i = 0; i < totalReservas; ++i){
+            ++iteraciones;
             tmp[i] = reservas[i];
         }
         tmp[totalReservas] = nuevaReservacion;
@@ -441,7 +456,7 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
         char fechaFin[12];
         sumarDias(fechaInicio, noches - 1, fechaFin);
         cout << "\n---------------------------------------\n";
-        cout << "\nComprobante de Reservacion: " << endl;
+        cout << "\nComprobante de Reservacion: " <<;
         cout << "Codigo: " << codReserva;
         cout << "Usuario: " << huesped->getNombreUsuario();
         cout << "Alojamiento: " << alojamientos[idxAlojamiento]->getCodigoAlojamiento() << endl;
