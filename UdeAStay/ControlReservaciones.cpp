@@ -285,7 +285,8 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
             Alojamiento* alojamiento = alojamientos[index];
             Usuario* anfitrion = alojamiento->getAnfitrion();
             cout << (i+1) << ". Codigo: " << alojamiento->getCodigoAlojamiento()
-                 << ", Precio: " << alojamiento->getPrecioPorNoche();
+                 << ", Precio: " << alojamiento->getPrecioPorNoche()
+                << ", Tipo: " << alojamiento->getTipo();
             if (anfitrion != nullptr){
                 cout << ", Puntuacion anfitrion: " << anfitrion->getPuntuacion();
             }else{
@@ -365,6 +366,7 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
         cout << "Codigo: " << codReserva << endl;
         cout << "Usuario: " << huesped->getNombreUsuario() << endl;
         cout << "Alojamiento: " << alojamientos[idxAlojamiento]->getCodigoAlojamiento() << endl;
+        cout << "Tipo: " << alojamientos[idxAlojamiento]->getTipo()<< endl;
         cout << "Fecha de entrada: "; fechaATexto(fechaInicio);
         cout << endl;
         cout << "Fecha de salida: "; fechaATexto(fechaFin);
@@ -463,10 +465,11 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
         char fechaFin[12];
         sumarDias(fechaInicio, noches - 1, fechaFin);
         cout << "\n---------------------------------------\n";
-        cout << "\nComprobante de Reservacion: ";
-        cout << "Codigo: " << codReserva;
-        cout << "Usuario: " << huesped->getNombreUsuario();
+        cout << "\nComprobante de Reservacion: " << endl;
+        cout << "Codigo: " << codReserva << endl;
+        cout << "Usuario: " << huesped->getNombreUsuario() << endl;
         cout << "Alojamiento: " << alojamientos[idxAlojamiento]->getCodigoAlojamiento() << endl;
+        cout << "Tipo: " << alojamientos[idxAlojamiento]->getTipo()<< endl;
         cout << "Fecha de entrada: "; fechaATexto(fechaInicio);
         cout << endl;
         cout << "Fecha de salida: "; fechaATexto(fechaFin);
@@ -517,6 +520,7 @@ void anularReservas(Usuario* usuario, Reservacion**& reservas, int& totalReserva
             cout << "Reserva #" << (contador + 1) << endl;
             cout << "  Codigo: " << reservas[i]->getCodigoReservacion() << endl;
             cout << "  Alojamiento: " << reservas[i]->getAlojamiento()->getCodigoAlojamiento() << endl;
+            cout << "  Tipo: " << reservas[i]->getAlojamiento()->getTipo() << endl;
             cout << "  Fecha de entrada: ";
             fechaATexto(reservas[i]->getFechaEntrada());
             cout << endl;

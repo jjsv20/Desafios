@@ -12,7 +12,7 @@ using namespace std;
 
 void sumarDias(const char* fecha, int dias, char* resultado);
 
-Alojamiento::Alojamiento(const char* nombreAlojamiento_, const char* codigoAlojamiento_, Usuario* anfitrion_, const char* departamento_, const char* municipio_, char tipo_, const char* direccion_, float precioPorNoche_, char** amenidades_, int cantidaAmenidades_, char** fechasReservadas_, int totalFechas_) {
+Alojamiento::Alojamiento(const char* nombreAlojamiento_, const char* codigoAlojamiento_, Usuario* anfitrion_, const char* departamento_, const char* municipio_, const char* tipo_, const char* direccion_, float precioPorNoche_, char** amenidades_, int cantidaAmenidades_, char** fechasReservadas_, int totalFechas_) {
     nombreAlojamiento = new char[strlen(nombreAlojamiento_) + 1];
     strcpy(nombreAlojamiento, nombreAlojamiento_);
     codigoAlojamiento = new char[strlen(codigoAlojamiento_) + 1];
@@ -22,7 +22,8 @@ Alojamiento::Alojamiento(const char* nombreAlojamiento_, const char* codigoAloja
     strcpy(departamento, departamento_);
     municipio = new char[strlen(municipio_) + 1];
     strcpy(municipio, municipio_);
-    tipo = tipo_;
+    tipo = new char[strlen(tipo_) + 1];
+    strcpy(tipo, tipo_);
     direccion = new char [strlen(direccion_) + 1];
     strcpy(direccion, direccion_);
     precioPorNoche = precioPorNoche_;
@@ -45,6 +46,7 @@ Alojamiento::~Alojamiento(){
     delete[] codigoAlojamiento;
     delete[] departamento;
     delete[] municipio;
+    delete[] tipo;
     delete[] direccion;
     for(int i = 0; i < cantidadAmenidades; ++i){
         delete[] amenidades[i];
@@ -78,6 +80,10 @@ char** Alojamiento::getAmenidades() {
 
 int Alojamiento::getCantidadAmenidades() const {
     return cantidadAmenidades;
+}
+
+const char* Alojamiento::getTipo(){
+    return tipo;
 }
 
 
@@ -131,7 +137,7 @@ void Alojamiento::cargarArchivoAlojamientos(Alojamiento**& alojamientos, int& to
         string nombreAnfitrion = linea.substr(p2 + 1, p3 - p2 - 1);
         string departamento = linea.substr(p3 + 1, p4 - p3 - 1);
         string municipio = linea.substr(p4 + 1, p5 - p4 - 1);
-        char tipo = linea[p5 + 1];
+        string tipo = linea.substr(p5 + 1, p6 - p5 - 1);
         string direccion = linea.substr(p6 + 1, p7 - p6 - 1);
         float precioNoche = stof(linea.substr(p7 + 1, p8 - p7 - 1));
         string amenidadesAloja = linea.substr(p8 + 1, p9 - p8 - 1);
@@ -203,9 +209,8 @@ void Alojamiento::cargarArchivoAlojamientos(Alojamiento**& alojamientos, int& to
         }
         alojamientos[totalAlojamientos++] = new Alojamiento(
             nombreAlojamiento.c_str(), codigoAlojamiento.c_str(), anfitrion,
-            departamento.c_str(), municipio.c_str(), tipo,
-            direccion.c_str(), precioNoche, amenidades, cantAmenidades, fechas, cantFechas
-            );
+            departamento.c_str(), municipio.c_str(), tipo.c_str(),
+            direccion.c_str(), precioNoche, amenidades, cantAmenidades, fechas, cantFechas);
         for (int j = 0; j < cantAmenidades; ++j){
             delete[] amenidades[j];
         }
