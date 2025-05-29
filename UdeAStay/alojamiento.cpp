@@ -206,14 +206,14 @@ void Alojamiento::cargarArchivoAlojamientos(Alojamiento**& alojamientos, int& to
             departamento.c_str(), municipio.c_str(), tipo,
             direccion.c_str(), precioNoche, amenidades, cantAmenidades, fechas, cantFechas
             );
-        /*/for (int j = 0; j < cantAmenidades; ++j){
+        for (int j = 0; j < cantAmenidades; ++j){
             delete[] amenidades[j];
-        }/*/
+        }
         delete[] amenidades;
         for (int j = 0; j < cantFechas; ++j){
             delete[] fechas[j];
         }
-        //delete[] fechas;
+        delete[] fechas;
 
     }
     archivo.close();

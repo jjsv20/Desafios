@@ -55,11 +55,9 @@ int main()
                     switch (opcionHuesped) {
                     case 1:
                         reservarAlojamiento(usuario, alojamientos, totalAlojamientos, reservas, totalReservas);
-                        mostrarConsumoDeRecursos();
                         break;
                     case 2:
                         anularReservas(usuario, reservas, totalReservas);
-                        mostrarConsumoDeRecursos();
                         break;
                     case 3:
                         cout << "Cerrando sesión...\n";

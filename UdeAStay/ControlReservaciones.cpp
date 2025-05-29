@@ -226,7 +226,6 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
     cin >> opcionBusqueda;
     char fechaInicio[12];
     int noches;
-    //int idxAlojamiento = -1;
 
     if(opcionBusqueda == 1){
         char municipio[50];
@@ -247,7 +246,6 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
             cout << "Ingrese precio maximo: ";
             cin >> precioMax;
         }
-        //char filtroPuntuacion;
         cout << "Desea filtrar por puntuacion minima del anfitrion? (si o no): ";
         cin >> filtroPuntuacion;
         if(strcmp(filtroPuntuacion, "si") == 0){
@@ -265,7 +263,8 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
             if(precioMax > 0 && alojamientos[i]->getPrecioPorNoche() > precioMax){
                 continue;
             }
-            if(puntuacionMinima > 0 && alojamientos[i]->getAnfitrion()->getPuntuacion() < puntuacionMinima){
+            Usuario* anfitrion = alojamientos[i]->getAnfitrion();
+            if(puntuacionMinima > 0 && anfitrion != nullptr && anfitrion->getPuntuacion() < puntuacionMinima){
                 continue;
             }
             if(!alojamientos[i]->estaDisponible(fechaInicio, noches)){
@@ -282,13 +281,21 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
         cout << "\nAlojamientos disponibles en " << municipio << ": " << endl;
         for(int i  = 0; i < alojamientosEncontrados; ++i){
             ++iteraciones;
-            cout << (i+1) << ". Codigo: " << alojamientos[indices[i]]->getCodigoAlojamiento()
-                << ", Precio: " << alojamientos[indices[i]]->getPrecioPorNoche()
-                << ", Puntuacion anfitrion: " << alojamientos[indices[i]]->getAnfitrion()->getPuntuacion()
-                << ", Amenidades: ";
-            char** amenidades = alojamientos[indices[i]]->getAmenidades();
-            int cantidadAmenidades = alojamientos[indices[i]]->getCantidadAmenidades();
+            int index = indices[i];
+            Alojamiento* alojamiento = alojamientos[index];
+            Usuario* anfitrion = alojamiento->getAnfitrion();
+            cout << (i+1) << ". Codigo: " << alojamiento->getCodigoAlojamiento()
+                 << ", Precio: " << alojamiento->getPrecioPorNoche();
+            if (anfitrion != nullptr){
+                cout << ", Puntuacion anfitrion: " << anfitrion->getPuntuacion();
+            }else{
+                cout << ", Puntuacion anfitrion: N/A";
+            }
+                cout << ", Amenidades: ";
+            char** amenidades = alojamiento->getAmenidades();
+            int cantidadAmenidades = alojamiento->getCantidadAmenidades();
             for(int j = 0; j < cantidadAmenidades; ++j){
+                ++iteraciones;
                 cout << amenidades[j];
                 if(j < cantidadAmenidades - 1){
                     cout << ", ";
@@ -296,12 +303,12 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
             }
             cout << endl;
         }
-        cout << "\nSeleccione el codigo de alojamiento: ";
+        cout << "\nSeleccione el indice de alojamiento: ";
         int alojamientoSeleccionado;
         cin >> alojamientoSeleccionado;
         alojamientoSeleccionado--;
         if(alojamientoSeleccionado < 0 || alojamientoSeleccionado >= alojamientosEncontrados){
-            cout << "error";
+            cout << "\nIndice incorrecto";
             delete[] indices;
             return;
         }
@@ -456,7 +463,7 @@ void reservarAlojamiento(Usuario* huesped, Alojamiento** alojamientos, int total
         char fechaFin[12];
         sumarDias(fechaInicio, noches - 1, fechaFin);
         cout << "\n---------------------------------------\n";
-        cout << "\nComprobante de Reservacion: " <<;
+        cout << "\nComprobante de Reservacion: ";
         cout << "Codigo: " << codReserva;
         cout << "Usuario: " << huesped->getNombreUsuario();
         cout << "Alojamiento: " << alojamientos[idxAlojamiento]->getCodigoAlojamiento() << endl;
@@ -502,6 +509,7 @@ void anularReservas(Usuario* usuario, Reservacion**& reservas, int& totalReserva
     }
     int contador = 0;
     for (int i = 0; i < totalReservas; ++i) {
+        ++iteraciones;
         Usuario* usuarioReserva = reservas[i]->getDocumentoHuesped();
         if (usuarioReserva && strcmp(usuarioReserva->getNombreUsuario(), usuario->getNombreUsuario()) == 0) {
             char fechaFin[12];
@@ -534,6 +542,7 @@ void anularReservas(Usuario* usuario, Reservacion**& reservas, int& totalReserva
 
     int idxCodigo = -1;
     for(int i = 0; i < totalReservas; ++i){
+        ++iteraciones;
         Usuario* reservasUsuario = reservas[i]->getDocumentoHuesped();
         if(reservasUsuario && strcmp(reservasUsuario->getNombreUsuario(), usuario->getNombreUsuario()) == 0 && strcmp(reservas[i]->getCodigoReservacion(), codigoAEliminar) == 0){
             idxCodigo = i;
